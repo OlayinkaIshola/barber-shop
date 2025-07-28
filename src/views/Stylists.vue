@@ -73,26 +73,6 @@ const stylists = ref([
     bio: 'Mike is our master barber with over 8 years of experience. He specializes in classic cuts and modern fades, ensuring every client leaves looking sharp and confident.'
   },
   {
-    id: 2,
-    name: 'Sarah Williams',
-    title: 'Senior Stylist',
-    experience: 6,
-    rating: 4.8,
-    image: require('@/asset/images/download (2).jpg'),
-    specialties: ['Hair Washing', 'Styling', 'Color Consultation'],
-    bio: 'Sarah brings creativity and precision to every cut. With 6 years of experience, she excels in hair washing, styling, and helping clients find their perfect look.'
-  },
-  {
-    id: 3,
-    name: 'David Brown',
-    title: 'Barber Specialist',
-    experience: 5,
-    rating: 4.7,
-    image: require('@/asset/images/download (3).jpg'),
-    specialties: ['Buzz Cuts', 'Trimming', 'Precision Cuts'],
-    bio: 'David is known for his attention to detail and precision. He specializes in buzz cuts and trimming, delivering consistent, high-quality results every time.'
-  },
-  {
     id: 4,
     name: 'Lisa Davis',
     title: 'Style Consultant',
@@ -149,6 +129,12 @@ const continueWithStylist = (stylist) => {
     alert('Please select a service first')
     return
   }
+
+  // Store selected stylist for future service selections
+  localStorage.setItem('selectedStylist', JSON.stringify({
+    id: stylist.id,
+    name: stylist.name
+  }))
 
   // Navigate to booking page with both service and stylist information
   router.push({

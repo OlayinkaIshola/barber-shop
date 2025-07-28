@@ -144,7 +144,7 @@
         <div class="cta-content">
           <h2>Ready for Your Perfect Look?</h2>
           <p>Book your appointment today and experience the Elite difference</p>
-          <router-link to="/services" class="cta-button large">
+          <router-link to="/services" class="cta-button large gold">
             <span>Start Your Journey</span>
             <div class="button-shine"></div>
           </router-link>
@@ -290,7 +290,7 @@ onMounted(() => {
 }
 
 .title-line:nth-child(2) {
-  animation-delay: 0.2s;
+  animation: fadeInOut 4s ease-in-out infinite;
   background: linear-gradient(45deg, #d4af37, #f4e4bc);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -368,6 +368,18 @@ onMounted(() => {
   border-color: #f4e4bc;
 }
 
+.cta-button.gold {
+  background: linear-gradient(45deg, #d4af37, #f4e4bc);
+  color: #2c2c2c;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+  font-weight: 700;
+}
+
+.cta-button.gold:hover {
+  background: linear-gradient(45deg, #f4e4bc, #d4af37);
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.6);
+}
+
 .button-shine {
   position: absolute;
   top: 0;
@@ -404,6 +416,7 @@ onMounted(() => {
   height: 400px;
   object-fit: cover;
   display: block;
+  animation: gentleFloat 6s ease-in-out infinite;
 }
 
 .image-overlay {
@@ -446,6 +459,27 @@ onMounted(() => {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes gentleFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  33% {
+    transform: translateY(-10px) scale(1.02);
+  }
+  66% {
+    transform: translateY(5px) scale(0.98);
   }
 }
 

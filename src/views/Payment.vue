@@ -1,59 +1,78 @@
 <template>
   <div class="payment">
-    <h1>Payment</h1>
-    
-    <div v-if="bookingData" class="booking-summary">
-      <h2>Booking Summary</h2>
-      <div class="summary-item">
-        <span>Booking ID:</span>
-        <span>#{{ bookingData.bookingId }}</span>
+    <div class="payment-container">
+      <div class="payment-header">
+        <h1>Secure Payment</h1>
+        <p>Complete your booking with our secure payment system</p>
       </div>
-      <div v-if="selectedService" class="summary-item">
-        <span>Service:</span>
-        <span>{{ selectedService.name }}</span>
+
+      <div v-if="bookingData" class="booking-summary">
+        <h2>Booking Summary</h2>
+        <div class="summary-grid">
+          <div class="summary-item">
+            <div class="item-label">Booking ID</div>
+            <div class="item-value">#{{ bookingData.bookingId }}</div>
+          </div>
+          <div v-if="selectedService" class="summary-item">
+            <div class="item-label">Service</div>
+            <div class="item-value">{{ selectedService.name }}</div>
+          </div>
+          <div v-if="selectedStylist" class="summary-item">
+            <div class="item-label">Stylist</div>
+            <div class="item-value">{{ selectedStylist.name }}</div>
+          </div>
+          <div v-if="bookingData.date && bookingData.time" class="summary-item">
+            <div class="item-label">Date & Time</div>
+            <div class="item-value">{{ bookingData.date }} at {{ bookingData.time }}</div>
+          </div>
+        </div>
+        <div class="summary-total">
+          <div class="total-label">Total Amount</div>
+          <div class="total-value">${{ amount }}</div>
+        </div>
       </div>
-      <div v-if="selectedStylist" class="summary-item">
-        <span>Stylist:</span>
-        <span>{{ selectedStylist.name }}</span>
-      </div>
-      <div v-if="bookingData.date && bookingData.time" class="summary-item">
-        <span>Date & Time:</span>
-        <span>{{ bookingData.date }} at {{ bookingData.time }}</span>
-      </div>
-      <div class="summary-item total">
-        <span>Total:</span>
-        <span>${{ amount }}</span>
-      </div>
+
+      <form @submit.prevent="processPayment" class="payment-form">
+        <div class="form-header">
+          <h3>Payment Information</h3>
+          <div class="security-badge">
+            <span class="security-icon">🔒</span>
+            <span>Secure & Encrypted</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Card Number</label>
+          <input type="text" v-model="payment.cardNumber" placeholder="1234 5678 9012 3456" required>
+          <div class="card-icons">
+            <span class="card-icon">💳</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Expiry Date</label>
+            <input type="text" v-model="payment.expiry" placeholder="MM/YY" required>
+          </div>
+          <div class="form-group">
+            <label>CVV</label>
+            <input type="text" v-model="payment.cvv" placeholder="123" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Cardholder Name</label>
+          <input type="text" v-model="payment.cardholderName" placeholder="Full name as on card" required>
+        </div>
+
+        <button type="submit" class="pay-btn">
+          <span class="btn-icon">💳</span>
+          <span>Pay ${{ amount }}</span>
+          <div class="btn-shine"></div>
+        </button>
+      </form>
     </div>
-
-    <form @submit.prevent="processPayment" class="payment-form">
-      <h3>Payment Information</h3>
-      
-      <div class="form-group">
-        <label>Card Number:</label>
-        <input type="text" v-model="payment.cardNumber" placeholder="1234 5678 9012 3456" required>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Expiry Date:</label>
-          <input type="text" v-model="payment.expiry" placeholder="MM/YY" required>
-        </div>
-        <div class="form-group">
-          <label>CVV:</label>
-          <input type="text" v-model="payment.cvv" placeholder="123" required>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Cardholder Name:</label>
-        <input type="text" v-model="payment.cardholderName" required>
-      </div>
-
-      <button type="submit" class="pay-btn">
-        Pay ${{ amount }}
-      </button>
-    </form>
+  </div>
 
     <div v-if="paymentSuccess" class="success-message">
       <h2>✅ Payment Successful!</h2>
@@ -149,77 +168,275 @@ onMounted(() => {
 
 <style scoped>
 .payment {
-  max-width: 600px;
-  margin: 2rem auto;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f4e4bc 0%, #f0d49c 100%);
   padding: 2rem;
 }
 
+.payment-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(44, 44, 44, 0.15);
+  overflow: hidden;
+  border: 3px solid rgba(212, 175, 55, 0.2);
+  position: relative;
+}
+
+.payment-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #d4af37, #f4e4bc, #d4af37);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.payment-header {
+  background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+  color: #f4e4bc;
+  padding: 3rem 2rem 2rem;
+  text-align: center;
+}
+
+.payment-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: #d4af37;
+}
+
+.payment-header p {
+  opacity: 0.9;
+  font-size: 1.1rem;
+}
+
 .booking-summary {
-  background: #f8f9fa;
-  padding: 1.5rem;
-  border-radius: 8px;
-  margin-bottom: 2rem;
+  background: rgba(212, 175, 55, 0.1);
+  padding: 2rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.booking-summary h2 {
+  color: #2c2c2c;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .summary-item {
-  display: flex;
-  justify-content: space-between;
+  background: white;
+  padding: 1rem;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(44, 44, 44, 0.1);
+}
+
+.item-label {
+  color: #5a5a5a;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   margin-bottom: 0.5rem;
 }
 
-.summary-item.total {
+.item-value {
+  color: #2c2c2c;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.summary-total {
+  background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
+  padding: 1.5rem;
+  border-radius: 15px;
+  text-align: center;
+  color: #2c2c2c;
+}
+
+.total-label {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.total-value {
+  font-size: 2rem;
   font-weight: bold;
-  font-size: 1.2rem;
-  border-top: 1px solid #ddd;
-  padding-top: 0.5rem;
-  margin-top: 1rem;
 }
 
 .payment-form {
+  padding: 3rem;
+  background: linear-gradient(135deg, rgba(244, 228, 188, 0.05) 0%, rgba(212, 175, 55, 0.05) 100%);
+}
+
+.form-header {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(212, 175, 55, 0.2);
+}
+
+.form-header h3 {
+  color: #2c2c2c;
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.security-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(212, 175, 55, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #2c2c2c;
+}
+
+.security-icon {
+  font-size: 1.2rem;
+}
+
+.form-group {
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #2c2c2c;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 15px 20px;
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  border-radius: 12px;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(5px);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
+  background: white;
+  transform: translateY(-2px);
+}
+
+.card-icons {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.5rem;
 }
 
 .form-row {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 1rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-}
-
-.form-group input {
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
 }
 
 .pay-btn {
-  padding: 1rem;
-  background: #e74c3c;
-  color: white;
+  position: relative;
+  background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
+  color: #2c2c2c;
   border: none;
-  border-radius: 4px;
-  font-size: 1.1rem;
+  padding: 18px 40px;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: 700;
   cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  margin-top: 1rem;
 }
 
-.success-message {
-  text-align: center;
-  padding: 2rem;
-  background: #d4edda;
-  border-radius: 8px;
-  color: #155724;
-  margin-top: 2rem;
+.pay-btn:hover {
+  background: linear-gradient(135deg, #f4e4bc 0%, #d4af37 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
+}
+
+.btn-icon {
+  font-size: 1.3rem;
+}
+
+.btn-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.pay-btn:hover .btn-shine {
+  left: 100%;
+}
+
+@media (max-width: 768px) {
+  .payment {
+    padding: 1rem;
+  }
+
+  .payment-header {
+    padding: 2rem 1rem 1.5rem;
+  }
+
+  .payment-header h1 {
+    font-size: 2rem;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .form-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
 }
 </style>

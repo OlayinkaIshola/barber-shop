@@ -21,9 +21,7 @@
   box-sizing: border-box;
 }
 
-body {
-  padding-top: 80px;
-}
+
 
 .navbar {
   position: fixed;
@@ -35,10 +33,9 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+  background: linear-gradient(180deg, rgba(44, 44, 44, 0.95) 0%, rgba(44, 44, 44, 0.8) 70%, transparent 100%);
   color: #f4e4bc;
-  box-shadow: 0 2px 10px rgba(44, 44, 44, 0.3);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(15px);
   transition: all 0.3s ease;
 }
 

@@ -56,6 +56,17 @@
           />
         </div>
 
+        <div class="form-group">
+          <label for="location">Preferred Location *</label>
+          <select id="location" v-model="bookingForm.location" required>
+            <option value="">Select location</option>
+            <option value="downtown">Downtown Branch - 123 Main St</option>
+            <option value="uptown">Uptown Branch - 456 Oak Ave</option>
+            <option value="westside">Westside Branch - 789 Pine Rd</option>
+            <option value="eastside">Eastside Branch - 321 Elm St</option>
+          </select>
+        </div>
+
         <div class="form-row">
           <div class="form-group">
             <label for="date">Preferred Date *</label>
@@ -128,6 +139,7 @@ const bookingForm = ref({
   name: '',
   email: '',
   phone: '',
+  location: '',
   date: '',
   time: '',
   stylist: '',
@@ -159,6 +171,7 @@ const isFormValid = computed(() => {
   return bookingForm.value.name &&
          bookingForm.value.email &&
          bookingForm.value.phone &&
+         bookingForm.value.location &&
          bookingForm.value.date &&
          bookingForm.value.time
 })
@@ -243,13 +256,34 @@ onMounted(() => {
 }
 
 .booking-container {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(44, 44, 44, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(44, 44, 44, 0.15);
   overflow: hidden;
-  border: 2px solid rgba(212, 175, 55, 0.1);
+  border: 3px solid rgba(212, 175, 55, 0.2);
+  position: relative;
+}
+
+.booking-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #d4af37, #f4e4bc, #d4af37);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 .booking h1 {
@@ -335,17 +369,19 @@ onMounted(() => {
 }
 
 .booking-form {
-  padding: 2rem;
+  padding: 3rem;
+  background: linear-gradient(135deg, rgba(244, 228, 188, 0.05) 0%, rgba(212, 175, 55, 0.05) 100%);
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  position: relative;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: 2rem;
 }
 
 .form-group label {
@@ -359,12 +395,14 @@ onMounted(() => {
 .form-group select,
 .form-group textarea {
   width: 100%;
-  padding: 12px;
+  padding: 15px 20px;
   border: 2px solid rgba(212, 175, 55, 0.3);
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
   box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(5px);
 }
 
 .form-group input:focus,
@@ -372,7 +410,9 @@ onMounted(() => {
 .form-group textarea:focus {
   outline: none;
   border-color: #d4af37;
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
+  background: white;
+  transform: translateY(-2px);
 }
 
 .form-group textarea {

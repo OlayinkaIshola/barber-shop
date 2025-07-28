@@ -135,6 +135,22 @@ const services = ref([
   },
   {
     id: 11,
+    name: 'Professional Hair Wash',
+    description: 'Luxurious hair washing service with premium products',
+    price: 25,
+    duration: 30,
+    image: require('@/asset/images/download (2).jpg')
+  },
+  {
+    id: 12,
+    name: 'Precision Beard Styling',
+    description: 'Expert beard trimming and styling for the perfect look',
+    price: 28,
+    duration: 35,
+    image: require('@/asset/images/download (3).jpg')
+  },
+  {
+    id: 13,
     name: 'African Hair Styling',
     description: 'Specialized styling for African hair textures and patterns',
     price: 35,
@@ -142,7 +158,7 @@ const services = ref([
     image: require('@/asset/images/african-american-man-guy-sitting-chair-wash-hair.jpg')
   },
   {
-    id: 12,
+    id: 14,
     name: 'Executive Cut & Style',
     description: 'Premium business-ready haircut with professional styling',
     price: 45,
@@ -152,22 +168,42 @@ const services = ref([
 ])
 
 const selectService = (service) => {
-  // Store selected service and navigate to stylists page
-  localStorage.setItem('selectedService', JSON.stringify({
-    id: service.id,
-    name: service.name,
-    price: service.price,
-    duration: service.duration
-  }))
+  // Check if a stylist is already selected
+  const selectedStylist = localStorage.getItem('selectedStylist')
 
-  // Navigate to stylists page for stylist selection
-  router.push({
-    path: '/stylists',
-    query: {
-      serviceSelected: true,
-      serviceName: service.name
-    }
-  })
+  if (selectedStylist) {
+    // If stylist is already selected, go directly to booking
+    const stylistData = JSON.parse(selectedStylist)
+    router.push({
+      path: '/booking',
+      query: {
+        serviceId: service.id,
+        serviceName: service.name,
+        price: service.price,
+        duration: service.duration,
+        stylistId: stylistData.id,
+        stylistName: stylistData.name,
+        preferredStylist: stylistData.name
+      }
+    })
+  } else {
+    // Store selected service and navigate to stylists page
+    localStorage.setItem('selectedService', JSON.stringify({
+      id: service.id,
+      name: service.name,
+      price: service.price,
+      duration: service.duration
+    }))
+
+    // Navigate to stylists page for stylist selection
+    router.push({
+      path: '/stylists',
+      query: {
+        serviceSelected: true,
+        serviceName: service.name
+      }
+    })
+  }
 }
 </script>
 
