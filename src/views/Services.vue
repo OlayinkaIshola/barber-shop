@@ -64,6 +64,14 @@ const services = ref([
     price: 50,
     duration: 60,
     image: require('@/asset/images/young-man-visiting-barbershop.jpg')
+  },
+  {
+    id: 6,
+    name: 'Hot Towel Shave',
+    description: 'Traditional hot towel shave with premium oils and aftercare',
+    price: 30,
+    duration: 40,
+    image: require('@/asset/images/side-view-barber-shaving-client-s-beard-close-up.jpg')
   }
 ])
 

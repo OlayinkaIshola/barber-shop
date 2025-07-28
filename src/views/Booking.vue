@@ -180,13 +180,22 @@ Total: $${selectedService.value?.price}
 
 We'll send you a confirmation email shortly.`)
 
-  // Navigate to payment or confirmation page
+  // Store booking data for payment and success pages
+  const paymentData = {
+    bookingId: bookingData.bookingId,
+    amount: selectedService.value?.price,
+    serviceName: selectedService.value?.name,
+    date: bookingForm.value.date,
+    time: bookingForm.value.time,
+    stylist: bookingForm.value.stylist || 'No preference'
+  }
+
+  localStorage.setItem('bookingData', JSON.stringify(paymentData))
+
+  // Navigate to payment page
   router.push({
     path: '/payment',
-    query: {
-      bookingId: bookingData.bookingId,
-      amount: selectedService.value?.price
-    }
+    query: paymentData
   })
 }
 
@@ -204,6 +213,11 @@ onMounted(() => {
       price: route.query.price,
       duration: route.query.duration
     }
+  }
+
+  // Pre-select stylist if coming from stylists page
+  if (route.query.preferredStylist) {
+    bookingForm.value.stylist = route.query.preferredStylist
   }
 })
 </script>

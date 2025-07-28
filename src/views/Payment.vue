@@ -108,17 +108,23 @@ const processPayment = () => {
   setTimeout(() => {
     paymentSuccess.value = true
 
-    // Show success message
-    alert(`Payment successful!
-Amount: $${amount.value}
-Booking ID: ${route.query.bookingId}
+    // Store booking details for success page
+    const successData = {
+      bookingId: route.query.bookingId,
+      amount: amount.value,
+      serviceName: bookingData.value?.serviceName,
+      date: bookingData.value?.date,
+      time: bookingData.value?.time,
+      stylist: bookingData.value?.stylist
+    }
 
-Thank you for choosing our barber shop!`)
+    localStorage.setItem('lastBooking', JSON.stringify(successData))
 
-    // Navigate back to home
-    setTimeout(() => {
-      router.push('/')
-    }, 2000)
+    // Navigate to success page
+    router.push({
+      path: '/payment-success',
+      query: successData
+    })
   }, 1000)
 }
 
