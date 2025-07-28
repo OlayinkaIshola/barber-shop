@@ -137,7 +137,7 @@ onMounted(() => {
 <style scoped>
 .stylists {
   padding: 2rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #f4e4bc 0%, #f0d49c 100%);
   min-height: 100vh;
 }
 
@@ -150,14 +150,14 @@ onMounted(() => {
 }
 
 .stylists-header h1 {
-  color: #2c3e50;
+  color: #2c2c2c;
   font-size: 3rem;
   margin-bottom: 1rem;
   font-weight: 700;
 }
 
 .header-description {
-  color: #666;
+  color: #5a5a5a;
   font-size: 1.2rem;
   line-height: 1.6;
   margin: 0;
@@ -182,7 +182,7 @@ onMounted(() => {
 
 .stylist-card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2);
 }
 
 .stylist-image {
@@ -208,7 +208,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.8) 0%, rgba(244, 228, 188, 0.8) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
   display: flex;
@@ -227,7 +227,7 @@ onMounted(() => {
 
 .social-link {
   background: white;
-  color: #667eea;
+  color: #d4af37;
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -241,7 +241,7 @@ onMounted(() => {
 
 .social-link:hover {
   transform: scale(1.1);
-  background: #667eea;
+  background: #d4af37;
   color: white;
 }
 
@@ -250,28 +250,28 @@ onMounted(() => {
 }
 
 .stylist-info h3 {
-  color: #2c3e50;
+  color: #2c2c2c;
   font-size: 1.8rem;
   margin: 0 0 0.5rem 0;
   font-weight: 700;
 }
 
 .stylist-title {
-  color: #667eea;
+  color: #d4af37;
   font-size: 1.1rem;
   font-weight: 600;
   margin: 0 0 0.5rem 0;
 }
 
 .stylist-experience {
-  color: #666;
+  color: #5a5a5a;
   font-size: 0.9rem;
   margin: 0 0 1.5rem 0;
   font-style: italic;
 }
 
 .stylist-specialties h4 {
-  color: #2c3e50;
+  color: #2c2c2c;
   font-size: 1rem;
   margin: 0 0 0.5rem 0;
   font-weight: 600;
@@ -285,8 +285,8 @@ onMounted(() => {
 }
 
 .specialty-tag {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
+  color: #2c2c2c;
   padding: 0.3rem 0.8rem;
   border-radius: 15px;
   font-size: 0.8rem;
@@ -294,7 +294,7 @@ onMounted(() => {
 }
 
 .stylist-bio {
-  color: #666;
+  color: #5a5a5a;
   line-height: 1.6;
   margin-bottom: 1.5rem;
   font-size: 0.95rem;
@@ -323,15 +323,15 @@ onMounted(() => {
 }
 
 .rating-text {
-  color: #666;
+  color: #5a5a5a;
   font-size: 0.9rem;
   font-weight: 600;
 }
 
 .continue-btn {
   width: 100%;
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-  color: white;
+  background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
+  color: #2c2c2c;
   border: none;
   padding: 15px 24px;
   border-radius: 25px;
@@ -344,29 +344,29 @@ onMounted(() => {
 }
 
 .continue-btn:hover {
-  background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+  background: linear-gradient(135deg, #f4e4bc 0%, #d4af37 100%);
   transform: translateY(-2px);
-  box-shadow: 0 8px 15px rgba(40, 167, 69, 0.4);
+  box-shadow: 0 8px 15px rgba(212, 175, 55, 0.4);
 }
 
 .no-service-message {
   text-align: center;
   padding: 1rem;
-  background: #f8f9fa;
+  background: rgba(212, 175, 55, 0.1);
   border-radius: 10px;
-  border: 2px dashed #dee2e6;
+  border: 2px dashed rgba(212, 175, 55, 0.3);
 }
 
 .no-service-message p {
-  color: #666;
+  color: #5a5a5a;
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
 
 .select-service-btn {
   display: inline-block;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
+  color: #2c2c2c;
   text-decoration: none;
   padding: 10px 20px;
   border-radius: 20px;
@@ -378,9 +378,9 @@ onMounted(() => {
 }
 
 .select-service-btn:hover {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  background: linear-gradient(135deg, #f4e4bc 0%, #d4af37 100%);
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4);
 }
 
 @media (max-width: 768px) {

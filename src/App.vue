@@ -26,21 +26,31 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background: #2c3e50;
-  color: white;
+  background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+  color: #f4e4bc;
+  box-shadow: 0 2px 10px rgba(44, 44, 44, 0.3);
+}
+
+.nav-brand h2 {
+  color: #d4af37;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 .nav-links a {
-  color: white;
+  color: #f4e4bc;
   text-decoration: none;
   margin-left: 2rem;
   padding: 0.5rem 1rem;
-  border-radius: 4px;
-  transition: background 0.3s;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  font-weight: 500;
 }
 
 .nav-links a:hover,
 .nav-links a.router-link-active {
-  background: #34495e;
+  background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
+  color: #2c2c2c;
+  transform: translateY(-2px);
 }
 </style>

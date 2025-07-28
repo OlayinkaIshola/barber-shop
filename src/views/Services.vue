@@ -126,12 +126,12 @@ const selectService = (service) => {
 <style scoped>
 .services {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #f4e4bc 0%, #f0d49c 100%);
 }
 
 .services-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+  color: #f4e4bc;
   padding: 6rem 2rem 4rem;
   text-align: center;
   position: relative;
@@ -181,12 +181,13 @@ const selectService = (service) => {
 .decoration-line {
   width: 60px;
   height: 2px;
-  background: linear-gradient(90deg, transparent, #ffd700, transparent);
+  background: linear-gradient(90deg, transparent, #d4af37, transparent);
 }
 
 .decoration-diamond {
   font-size: 1.5rem;
   animation: pulse 2s infinite;
+  color: #d4af37;
 }
 
 .services-container {
@@ -214,7 +215,7 @@ const selectService = (service) => {
 
 .service-card:hover {
   transform: translateY(-15px) scale(1.02);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 25px 50px rgba(212, 175, 55, 0.3);
 }
 
 @keyframes slideInUp {
@@ -272,7 +273,7 @@ const selectService = (service) => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.8) 0%, rgba(244, 228, 188, 0.8) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
   display: flex;
@@ -286,17 +287,18 @@ const selectService = (service) => {
 
 .overlay-content {
   text-align: center;
-  color: white;
+  color: #2c2c2c;
 }
 
 .service-badge {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(44, 44, 44, 0.2);
   backdrop-filter: blur(10px);
   padding: 10px 20px;
   border-radius: 25px;
   font-size: 1.5rem;
   font-weight: bold;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(44, 44, 44, 0.3);
+  color: #2c2c2c;
 }
 
 .service-content {
@@ -305,14 +307,14 @@ const selectService = (service) => {
 }
 
 .service-content h3 {
-  color: #2c3e50;
+  color: #2c2c2c;
   margin-bottom: 1rem;
   font-size: 1.6rem;
   font-weight: 700;
 }
 
 .service-content p {
-  color: #666;
+  color: #5a5a5a;
   margin-bottom: 1.5rem;
   line-height: 1.6;
   font-size: 1rem;
@@ -324,19 +326,20 @@ const selectService = (service) => {
   align-items: center;
   margin-bottom: 2rem;
   padding: 1rem;
-  background: #f8f9fa;
+  background: rgba(212, 175, 55, 0.1);
   border-radius: 10px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 .price {
   font-size: 2rem;
   font-weight: bold;
-  color: #e74c3c;
+  color: #d4af37;
   margin: 0;
 }
 
 .duration {
-  color: #666;
+  color: #5a5a5a;
   font-style: italic;
   font-size: 0.9rem;
   margin: 0;
@@ -344,8 +347,8 @@ const selectService = (service) => {
 
 .select-btn {
   position: relative;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
+  color: #2c2c2c;
   border: none;
   padding: 15px 30px;
   border-radius: 50px;
@@ -360,9 +363,9 @@ const selectService = (service) => {
 }
 
 .select-btn:hover {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  background: linear-gradient(135deg, #f4e4bc 0%, #d4af37 100%);
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
 }
 
 .select-btn:active {

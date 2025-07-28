@@ -238,7 +238,7 @@ onMounted(() => {
 <style scoped>
 .booking {
   padding: 2rem;
-  background-color: #f8f9fa;
+  background: linear-gradient(135deg, #f4e4bc 0%, #f0d49c 100%);
   min-height: 100vh;
 }
 
@@ -247,28 +247,28 @@ onMounted(() => {
   margin: 0 auto;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(44, 44, 44, 0.1);
   overflow: hidden;
+  border: 2px solid rgba(212, 175, 55, 0.1);
 }
 
 .booking h1 {
   text-align: center;
-  color: #2c3e50;
+  color: #f4e4bc;
   margin: 0;
   padding: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
   font-size: 2.5rem;
 }
 
 .booking-summary {
   padding: 2rem;
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #dee2e6;
+  background: rgba(212, 175, 55, 0.1);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 .booking-summary h2 {
-  color: #2c3e50;
+  color: #2c2c2c;
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
   text-align: center;
@@ -286,20 +286,20 @@ onMounted(() => {
   padding: 1.5rem;
   border-radius: 12px;
   text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(44, 44, 44, 0.1);
 }
 
 .service-info {
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #d4af37;
 }
 
 .stylist-info {
-  border-left: 4px solid #28a745;
+  border-left: 4px solid #8B4513;
 }
 
 .service-info h3,
 .stylist-info h3 {
-  color: #666;
+  color: #5a5a5a;
   margin: 0 0 0.5rem 0;
   font-size: 0.9rem;
   text-transform: uppercase;
@@ -308,27 +308,27 @@ onMounted(() => {
 
 .service-info h4,
 .stylist-info h4 {
-  color: #2c3e50;
+  color: #2c2c2c;
   margin: 0 0 1rem 0;
   font-size: 1.3rem;
   font-weight: 700;
 }
 
 .service-price {
-  color: #e74c3c;
+  color: #d4af37;
   font-size: 1.5rem;
   font-weight: bold;
   margin: 0.5rem 0;
 }
 
 .service-duration {
-  color: #666;
+  color: #5a5a5a;
   margin: 0;
   font-style: italic;
 }
 
 .stylist-note {
-  color: #28a745;
+  color: #8B4513;
   margin: 0;
   font-weight: 500;
   font-size: 0.9rem;
@@ -351,7 +351,7 @@ onMounted(() => {
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #2c3e50;
+  color: #2c2c2c;
   font-weight: 600;
 }
 
@@ -360,7 +360,7 @@ onMounted(() => {
 .form-group textarea {
   width: 100%;
   padding: 12px;
-  border: 2px solid #dee2e6;
+  border: 2px solid rgba(212, 175, 55, 0.3);
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.3s ease;
@@ -371,8 +371,8 @@ onMounted(() => {
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
 }
 
 .form-group textarea {
@@ -404,14 +404,14 @@ onMounted(() => {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
+  color: #2c2c2c;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  background: linear-gradient(135deg, #f4e4bc 0%, #d4af37 100%);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
 }
 
 .btn-primary:disabled {
@@ -421,14 +421,14 @@ onMounted(() => {
 }
 
 .btn-secondary {
-  background: #6c757d;
-  color: white;
+  background: #8B4513;
+  color: #f4e4bc;
 }
 
 .btn-secondary:hover {
-  background: #5a6268;
+  background: #A0522D;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
 }
 
 @media (max-width: 768px) {
