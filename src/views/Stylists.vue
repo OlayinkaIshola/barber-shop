@@ -35,9 +35,17 @@
             </div>
             <span class="rating-text">({{ stylist.rating }}/5)</span>
           </div>
-          <button @click="bookWithStylist(stylist)" class="book-stylist-btn">
-            Book with {{ stylist.name }}
+          <button
+            v-if="selectedService"
+            @click="continueWithStylist(stylist)"
+            class="continue-btn"
+          >
+            Continue with {{ stylist.name }}
           </button>
+          <div v-else class="no-service-message">
+            <p>Select a service first to book with {{ stylist.name }}</p>
+            <router-link to="/services" class="select-service-btn">Choose Service</router-link>
+          </div>
         </div>
       </div>
     </div>
@@ -45,10 +53,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
+
+const selectedService = ref(null)
 
 const stylists = ref([
   {
@@ -93,16 +104,34 @@ const stylists = ref([
   }
 ])
 
-const bookWithStylist = (stylist) => {
+const continueWithStylist = (stylist) => {
+  if (!selectedService.value) {
+    alert('Please select a service first')
+    return
+  }
+
+  // Navigate to booking page with both service and stylist information
   router.push({
     path: '/booking',
     query: {
+      serviceId: selectedService.value.id,
+      serviceName: selectedService.value.name,
+      price: selectedService.value.price,
+      duration: selectedService.value.duration,
       stylistId: stylist.id,
       stylistName: stylist.name,
       preferredStylist: stylist.name
     }
   })
 }
+
+onMounted(() => {
+  // Check if a service was selected from the services page
+  const storedService = localStorage.getItem('selectedService')
+  if (storedService) {
+    selectedService.value = JSON.parse(storedService)
+  }
+})
 </script>
 
 <style scoped>
@@ -299,9 +328,9 @@ const bookWithStylist = (stylist) => {
   font-weight: 600;
 }
 
-.book-stylist-btn {
+.continue-btn {
   width: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
   color: white;
   border: none;
   padding: 15px 24px;
@@ -314,10 +343,44 @@ const bookWithStylist = (stylist) => {
   letter-spacing: 1px;
 }
 
-.book-stylist-btn:hover {
+.continue-btn:hover {
+  background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(40, 167, 69, 0.4);
+}
+
+.no-service-message {
+  text-align: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 2px dashed #dee2e6;
+}
+
+.no-service-message p {
+  color: #666;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.select-service-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.select-service-btn:hover {
   background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
   transform: translateY(-2px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4);
 }
 
 @media (max-width: 768px) {

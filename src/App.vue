@@ -7,9 +7,7 @@
       <div class="nav-links">
         <router-link to="/">Home</router-link>
         <router-link to="/services">Services</router-link>
-        <router-link to="/stylists">Stylists</router-link>
-        <router-link to="/booking">Book Now</router-link>
-        <router-link to="/payment">Payment</router-link>
+        <router-link to="/stylists">Our Team</router-link>
       </div>
     </nav>
     <router-view />

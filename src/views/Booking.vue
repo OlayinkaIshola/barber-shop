@@ -3,13 +3,21 @@
     <div class="booking-container">
       <h1>Book an Appointment</h1>
 
-      <!-- Selected Service Display -->
-      <div v-if="selectedService" class="selected-service">
-        <h2>Selected Service</h2>
-        <div class="service-info">
-          <h3>{{ selectedService.name }}</h3>
-          <p class="service-price">${{ selectedService.price }}</p>
-          <p class="service-duration">Duration: {{ selectedService.duration }} minutes</p>
+      <!-- Selected Service and Stylist Display -->
+      <div v-if="selectedService" class="booking-summary">
+        <h2>Booking Summary</h2>
+        <div class="summary-grid">
+          <div class="service-info">
+            <h3>Selected Service</h3>
+            <h4>{{ selectedService.name }}</h4>
+            <p class="service-price">${{ selectedService.price }}</p>
+            <p class="service-duration">{{ selectedService.duration }} minutes</p>
+          </div>
+          <div v-if="selectedStylist" class="stylist-info">
+            <h3>Selected Stylist</h3>
+            <h4>{{ selectedStylist }}</h4>
+            <p class="stylist-note">Your preferred stylist</p>
+          </div>
         </div>
       </div>
 
@@ -111,8 +119,9 @@ import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
 const router = useRouter()
 
-// Selected service from query parameters
+// Selected service and stylist from query parameters
 const selectedService = ref(null)
+const selectedStylist = ref(null)
 
 // Booking form data
 const bookingForm = ref({
@@ -217,8 +226,12 @@ onMounted(() => {
 
   // Pre-select stylist if coming from stylists page
   if (route.query.preferredStylist) {
+    selectedStylist.value = route.query.preferredStylist
     bookingForm.value.stylist = route.query.preferredStylist
   }
+
+  // Clear the selected service from localStorage after using it
+  localStorage.removeItem('selectedService')
 })
 </script>
 
@@ -248,29 +261,57 @@ onMounted(() => {
   font-size: 2.5rem;
 }
 
-.selected-service {
+.booking-summary {
   padding: 2rem;
   background-color: #f8f9fa;
   border-bottom: 1px solid #dee2e6;
 }
 
-.selected-service h2 {
+.booking-summary h2 {
   color: #2c3e50;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   font-size: 1.5rem;
+  text-align: center;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.service-info,
+.stylist-info {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .service-info {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 8px;
   border-left: 4px solid #667eea;
 }
 
-.service-info h3 {
-  color: #2c3e50;
+.stylist-info {
+  border-left: 4px solid #28a745;
+}
+
+.service-info h3,
+.stylist-info h3 {
+  color: #666;
   margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.service-info h4,
+.stylist-info h4 {
+  color: #2c3e50;
+  margin: 0 0 1rem 0;
   font-size: 1.3rem;
+  font-weight: 700;
 }
 
 .service-price {
@@ -284,6 +325,13 @@ onMounted(() => {
   color: #666;
   margin: 0;
   font-style: italic;
+}
+
+.stylist-note {
+  color: #28a745;
+  margin: 0;
+  font-weight: 500;
+  font-size: 0.9rem;
 }
 
 .booking-form {
@@ -391,6 +439,11 @@ onMounted(() => {
   .booking h1 {
     font-size: 2rem;
     padding: 1.5rem;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .form-row {
