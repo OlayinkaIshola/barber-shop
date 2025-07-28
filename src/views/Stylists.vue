@@ -1,5 +1,6 @@
 <template>
   <div class="stylists">
+    <PageNavigation />
     <div class="stylists-header">
       <h1>Our Expert Stylists</h1>
       <p class="header-description">Meet our talented team of professional stylists who are passionate about making you look and feel your best.</p>
@@ -81,6 +82,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import PageNavigation from '@/components/PageNavigation.vue'
 
 const router = useRouter()
 const route = useRoute()

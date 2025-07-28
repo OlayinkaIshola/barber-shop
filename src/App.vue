@@ -13,6 +13,10 @@
         <router-link to="/">Home</router-link>
         <router-link to="/services">Services</router-link>
         <router-link to="/stylists">Our Team</router-link>
+        <router-link v-if="isLoggedIn" to="/employee-dashboard" class="dashboard-link">Dashboard</router-link>
+        <router-link v-if="!isLoggedIn" to="/register" class="register-link">Register as Barber</router-link>
+        <router-link v-if="!isLoggedIn" to="/login" class="login-link">Login</router-link>
+        <button v-if="isLoggedIn" @click="logout" class="logout-btn">Logout</button>
       </div>
     </nav>
     <router-view />
@@ -21,13 +25,28 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
+const router = useRouter()
 const dynamicNavBackground = ref('linear-gradient(180deg, rgba(44, 44, 44, 0.95) 0%, rgba(44, 44, 44, 0.8) 70%, transparent 100%)')
+const isLoggedIn = ref(false)
 
 // Pages where navigation should be hidden
-const hiddenNavPages = ['/booking', '/payment', '/payment-success']
+const hiddenNavPages = ['/booking', '/payment', '/payment-success', '/register', '/login', '/forgot-password']
+
+// Check login status
+const checkLoginStatus = () => {
+  isLoggedIn.value = localStorage.getItem('isLoggedIn') === 'true'
+}
+
+// Logout function
+const logout = () => {
+  localStorage.removeItem('isLoggedIn')
+  localStorage.removeItem('userEmail')
+  isLoggedIn.value = false
+  router.push('/')
+}
 
 const showNavigation = computed(() => {
   return !hiddenNavPages.includes(route.path)
@@ -36,6 +55,9 @@ const showNavigation = computed(() => {
 let observer = null
 
 onMounted(() => {
+  // Check login status on app load
+  checkLoginStatus()
+
   // Only set up intersection observer on pages that show navigation
   if (showNavigation.value) {
     setupIntersectionObserver()
@@ -145,6 +167,59 @@ const setupIntersectionObserver = () => {
 .nav-links a.router-link-active {
   background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
   color: #2c2c2c;
+  transform: translateY(-2px);
+}
+
+.nav-links .register-link {
+  background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
+  color: #2c2c2c;
+  font-weight: 600;
+  border: 2px solid #d4af37;
+}
+
+.nav-links .register-link:hover {
+  background: linear-gradient(135deg, #f4e4bc 0%, #d4af37 100%);
+  transform: translateY(-2px) scale(1.05);
+}
+
+.nav-links .login-link {
+  border: 2px solid #f4e4bc;
+  background: transparent;
+}
+
+.nav-links .login-link:hover {
+  background: rgba(244, 228, 188, 0.1);
+  border-color: #d4af37;
+}
+
+.nav-links .dashboard-link {
+  background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
+  color: white;
+  font-weight: 600;
+  border: 2px solid #3498db;
+}
+
+.nav-links .dashboard-link:hover {
+  background: linear-gradient(135deg, #5dade2 0%, #3498db 100%);
+  transform: translateY(-2px) scale(1.05);
+}
+
+.logout-btn {
+  background: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+  border: 2px solid rgba(231, 76, 60, 0.3);
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.logout-btn:hover {
+  background: rgba(231, 76, 60, 0.2);
+  border-color: #e74c3c;
   transform: translateY(-2px);
 }
 </style>

@@ -1,5 +1,6 @@
 <template>
   <div class="booking">
+    <PageNavigation />
     <div class="booking-container">
       <h1>Book an Appointment</h1>
 
@@ -199,6 +200,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import PageNavigation from '@/components/PageNavigation.vue'
 
 const route = useRoute()
 const router = useRouter()

@@ -1,5 +1,6 @@
 <template>
   <div class="services">
+    <PageNavigation />
     <div class="services-header">
       <div class="header-content">
         <h1 class="services-title">Our Premium Services</h1>
@@ -49,6 +50,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import PageNavigation from '@/components/PageNavigation.vue'
 
 const router = useRouter()
 
@@ -171,42 +173,22 @@ const servicesData = [
 const services = ref(servicesData.sort((a, b) => a.price - b.price))
 
 const selectService = (service) => {
-  // Check if a stylist is already selected
-  const selectedStylist = localStorage.getItem('selectedStylist')
+  // Always store selected service and navigate to stylists page
+  localStorage.setItem('selectedService', JSON.stringify({
+    id: service.id,
+    name: service.name,
+    price: service.price,
+    duration: service.duration
+  }))
 
-  if (selectedStylist) {
-    // If stylist is already selected, go directly to booking
-    const stylistData = JSON.parse(selectedStylist)
-    router.push({
-      path: '/booking',
-      query: {
-        serviceId: service.id,
-        serviceName: service.name,
-        price: service.price,
-        duration: service.duration,
-        stylistId: stylistData.id,
-        stylistName: stylistData.name,
-        preferredStylist: stylistData.name
-      }
-    })
-  } else {
-    // Store selected service and navigate to stylists page
-    localStorage.setItem('selectedService', JSON.stringify({
-      id: service.id,
-      name: service.name,
-      price: service.price,
-      duration: service.duration
-    }))
-
-    // Navigate to stylists page for stylist selection
-    router.push({
-      path: '/stylists',
-      query: {
-        serviceSelected: true,
-        serviceName: service.name
-      }
-    })
-  }
+  // Navigate to stylists page for stylist selection
+  router.push({
+    path: '/stylists',
+    query: {
+      serviceSelected: true,
+      serviceName: service.name
+    }
+  })
 }
 </script>
 

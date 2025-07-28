@@ -1,5 +1,6 @@
 <template>
   <div class="payment">
+    <PageNavigation />
     <div class="payment-container">
       <div class="payment-header">
         <h1>Secure Payment</h1>
@@ -161,6 +162,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import PageNavigation from '@/components/PageNavigation.vue'
 
 const route = useRoute()
 const router = useRouter()
