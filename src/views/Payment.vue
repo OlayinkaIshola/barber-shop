@@ -5,20 +5,24 @@
     <div v-if="bookingData" class="booking-summary">
       <h2>Booking Summary</h2>
       <div class="summary-item">
+        <span>Booking ID:</span>
+        <span>#{{ bookingData.bookingId }}</span>
+      </div>
+      <div v-if="selectedService" class="summary-item">
         <span>Service:</span>
-        <span>{{ selectedService?.name }}</span>
+        <span>{{ selectedService.name }}</span>
       </div>
-      <div class="summary-item">
+      <div v-if="selectedStylist" class="summary-item">
         <span>Stylist:</span>
-        <span>{{ selectedStylist?.name }}</span>
+        <span>{{ selectedStylist.name }}</span>
       </div>
-      <div class="summary-item">
+      <div v-if="bookingData.date && bookingData.time" class="summary-item">
         <span>Date & Time:</span>
         <span>{{ bookingData.date }} at {{ bookingData.time }}</span>
       </div>
       <div class="summary-item total">
         <span>Total:</span>
-        <span>${{ selectedService?.price }}</span>
+        <span>${{ amount }}</span>
       </div>
     </div>
 
@@ -47,7 +51,7 @@
       </div>
 
       <button type="submit" class="pay-btn">
-        Pay ${{ selectedService?.price }}
+        Pay ${{ amount }}
       </button>
     </form>
 
@@ -60,9 +64,14 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+
+const route = useRoute()
+const router = useRouter()
 
 const bookingData = ref(null)
 const paymentSuccess = ref(false)
+const amount = ref(0)
 
 const payment = ref({
   cardNumber: '',
@@ -75,36 +84,59 @@ const services = ref([
   { id: 1, name: 'Classic Haircut', price: 25 },
   { id: 2, name: 'Beard Trim', price: 15 },
   { id: 3, name: 'Hair Wash & Style', price: 35 },
-  { id: 4, name: 'Premium Package', price: 50 }
+  { id: 4, name: 'Buzz Cut', price: 20 },
+  { id: 5, name: 'Premium Package', price: 50 }
 ])
 
 const stylists = ref([
   { id: 1, name: 'Mike Johnson' },
-  { id: 2, name: 'Sarah Davis' },
-  { id: 3, name: 'Tony Rodriguez' },
-  { id: 4, name: 'Alex Chen' }
+  { id: 2, name: 'Sarah Williams' },
+  { id: 3, name: 'David Brown' },
+  { id: 4, name: 'Lisa Davis' }
 ])
 
-const selectedService = computed(() => 
+const selectedService = computed(() =>
   services.value.find(s => s.id == bookingData.value?.serviceId)
 )
 
-const selectedStylist = computed(() => 
-  stylists.value.find(s => s.id == bookingData.value?.stylistId)
+const selectedStylist = computed(() =>
+  stylists.value.find(s => s.name == bookingData.value?.stylist)
 )
 
 const processPayment = () => {
   // Simulate payment processing
   setTimeout(() => {
     paymentSuccess.value = true
-    localStorage.removeItem('bookingData')
+
+    // Show success message
+    alert(`Payment successful!
+Amount: $${amount.value}
+Booking ID: ${route.query.bookingId}
+
+Thank you for choosing our barber shop!`)
+
+    // Navigate back to home
+    setTimeout(() => {
+      router.push('/')
+    }, 2000)
   }, 1000)
 }
 
 onMounted(() => {
+  // Get payment information from query parameters
+  if (route.query.bookingId && route.query.amount) {
+    amount.value = route.query.amount
+    bookingData.value = {
+      bookingId: route.query.bookingId,
+      amount: route.query.amount
+    }
+  }
+
+  // Also check localStorage for any stored booking data
   const stored = localStorage.getItem('bookingData')
   if (stored) {
-    bookingData.value = JSON.parse(stored)
+    const storedData = JSON.parse(stored)
+    bookingData.value = { ...bookingData.value, ...storedData }
   }
 })
 </script>
