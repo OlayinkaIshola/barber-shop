@@ -117,21 +117,21 @@
         </div>
         <div class="gallery-grid">
           <div class="gallery-item" data-aos="fade-up" data-aos-delay="100">
-            <img src="@/asset/images/Afro-Buzz-Cut.jpg" alt="Afro Buzz Cut" />
+            <img src="@/asset/images/Buzz-cut2.jpg" alt="Modern Buzz Cut" />
             <div class="gallery-text">
-              <h4>Afro Buzz Cut</h4>
+              <h4>Modern Buzz Cut</h4>
             </div>
           </div>
           <div class="gallery-item" data-aos="fade-up" data-aos-delay="200">
-            <img src="@/asset/images/handsome-man-barbershop-shaving-beard.jpg" alt="Beard Styling" />
+            <img src="@/asset/images/2042e4cc-11a0-4431-8b9c-92e0fbe6549f.jpg" alt="Professional Styling" />
             <div class="gallery-text">
-              <h4>Beard Styling</h4>
+              <h4>Professional Styling</h4>
             </div>
           </div>
           <div class="gallery-item" data-aos="fade-up" data-aos-delay="300">
-            <img src="@/asset/images/young-man-visiting-barbershop.jpg" alt="Premium Service" />
+            <img src="@/asset/images/604d18da-ae87-4899-a3a5-8168c696f61f.jpg" alt="Expert Grooming" />
             <div class="gallery-text">
-              <h4>Premium Package</h4>
+              <h4>Expert Grooming</h4>
             </div>
           </div>
         </div>
@@ -476,17 +476,19 @@ onMounted(() => {
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 3rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  max-width: 90%;
+  margin: 0 auto;
 }
 
 .feature {
   position: relative;
   background: white;
-  padding: 3rem 2rem;
-  border-radius: 20px;
+  padding: 2rem 1.5rem;
+  border-radius: 15px;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(44, 44, 44, 0.1);
+  box-shadow: 0 8px 25px rgba(44, 44, 44, 0.1);
   transition: all 0.3s ease;
   overflow: hidden;
   border: 2px solid rgba(212, 175, 55, 0.1);
@@ -499,18 +501,18 @@ onMounted(() => {
 }
 
 .feature-icon {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .icon-circle {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: 1.5rem;
   margin: 0 auto;
   animation: pulse 2s infinite;
   color: #2c2c2c;
@@ -529,24 +531,24 @@ onMounted(() => {
 }
 
 .feature h3 {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: #2c2c2c;
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
   font-weight: 600;
 }
 
 .feature p {
   color: #5a5a5a;
-  line-height: 1.6;
-  font-size: 1rem;
+  line-height: 1.5;
+  font-size: 0.9rem;
 }
 
 .feature-number {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 40px;
-  height: 40px;
+  top: 15px;
+  right: 15px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
   color: #2c2c2c;
@@ -554,7 +556,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 /* Stats Section */
@@ -634,22 +636,27 @@ onMounted(() => {
 
 /* CTA Section */
 .cta-section {
-  padding: 6rem 0;
-  background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+  padding: 4rem 0;
+  background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
   color: #f4e4bc;
   text-align: center;
 }
 
+.cta-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
 .cta-content h2 {
-  font-size: 2.5rem;
+  font-size: 2rem;
   margin-bottom: 1rem;
   font-weight: 700;
   color: #d4af37;
 }
 
 .cta-content p {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
   opacity: 0.9;
 }
 
@@ -671,7 +678,9 @@ onMounted(() => {
   }
 
   .features-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    max-width: 95%;
   }
 
   .stats-grid {
@@ -694,6 +703,12 @@ onMounted(() => {
 @media (max-width: 480px) {
   .hero-title {
     font-size: 2rem;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    max-width: 100%;
   }
 
   .stats-grid {

@@ -78,7 +78,7 @@ const stylists = ref([
     title: 'Senior Stylist',
     experience: 6,
     rating: 4.8,
-    image: require('@/asset/images/medium-shot-man-hair-salon.jpg'),
+    image: require('@/asset/images/download (2).jpg'),
     specialties: ['Hair Washing', 'Styling', 'Color Consultation'],
     bio: 'Sarah brings creativity and precision to every cut. With 6 years of experience, she excels in hair washing, styling, and helping clients find their perfect look.'
   },
@@ -88,7 +88,7 @@ const stylists = ref([
     title: 'Barber Specialist',
     experience: 5,
     rating: 4.7,
-    image: require('@/asset/images/close-up-half-face-portrait-afro-american-man.jpg'),
+    image: require('@/asset/images/download (3).jpg'),
     specialties: ['Buzz Cuts', 'Trimming', 'Precision Cuts'],
     bio: 'David is known for his attention to detail and precision. He specializes in buzz cuts and trimming, delivering consistent, high-quality results every time.'
   },
@@ -98,9 +98,49 @@ const stylists = ref([
     title: 'Style Consultant',
     experience: 7,
     rating: 4.9,
-    image: require('@/asset/images/african-american-man-guy-sitting-chair-wash-hair.jpg'),
+    image: require('@/asset/images/download (4).jpg'),
     specialties: ['Consultations', 'Premium Services', 'Hair Care'],
     bio: 'Lisa is our style consultant who helps clients choose the perfect look. With 7 years of experience, she offers premium services and expert hair care advice.'
+  },
+  {
+    id: 5,
+    name: 'Marcus Thompson',
+    title: 'Fade Specialist',
+    experience: 4,
+    rating: 4.6,
+    image: require('@/asset/images/download (5).jpg'),
+    specialties: ['Fade Cuts', 'Modern Styles', 'Edge-ups'],
+    bio: 'Marcus is our fade specialist who creates perfect gradients and modern styles. His attention to detail and artistic approach makes him a client favorite.'
+  },
+  {
+    id: 6,
+    name: 'Antonio Rodriguez',
+    title: 'Traditional Barber',
+    experience: 10,
+    rating: 4.8,
+    image: require('@/asset/images/download.jpg'),
+    specialties: ['Traditional Cuts', 'Straight Razor', 'Hot Towel'],
+    bio: 'Antonio brings old-school barbering traditions with 10 years of experience. He excels in traditional cuts, straight razor shaves, and hot towel treatments.'
+  },
+  {
+    id: 7,
+    name: 'Jordan Mitchell',
+    title: 'Creative Stylist',
+    experience: 3,
+    rating: 4.5,
+    image: require('@/asset/images/00ebcff8-02ac-454d-8c06-bfe88965e1e5.jpg'),
+    specialties: ['Creative Cuts', 'Artistic Designs', 'Youth Styles'],
+    bio: 'Jordan is our youngest stylist with a fresh perspective on modern cuts. He specializes in creative designs and contemporary styles for younger clients.'
+  },
+  {
+    id: 8,
+    name: 'Carlos Mendez',
+    title: 'Senior Barber',
+    experience: 9,
+    rating: 4.7,
+    image: require('@/asset/images/022a725e-8ccc-4824-bfa6-e8984790db8d.jpg'),
+    specialties: ['Precision Cuts', 'Beard Sculpting', 'Hair Treatments'],
+    bio: 'Carlos combines technical precision with artistic flair. With 9 years of experience, he excels in precision cuts, beard sculpting, and specialized hair treatments.'
   }
 ])
 

@@ -21,7 +21,16 @@
   box-sizing: border-box;
 }
 
+body {
+  padding-top: 80px;
+}
+
 .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -29,6 +38,8 @@
   background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
   color: #f4e4bc;
   box-shadow: 0 2px 10px rgba(44, 44, 44, 0.3);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
 }
 
 .nav-brand h2 {

@@ -75,7 +75,7 @@ const services = ref([
     description: 'Complete wash and professional styling',
     price: 35,
     duration: 45,
-    image: require('@/asset/images/hairdresser-washing-woman-s-hair.jpg')
+    image: require('@/asset/images/woma-washing-man-s-head-barbershop.jpg')
   },
   {
     id: 4,
@@ -100,6 +100,54 @@ const services = ref([
     price: 30,
     duration: 40,
     image: require('@/asset/images/side-view-barber-shaving-client-s-beard-close-up.jpg')
+  },
+  {
+    id: 7,
+    name: 'Afro Buzz Cut',
+    description: 'Specialized buzz cut for afro-textured hair with expert precision',
+    price: 28,
+    duration: 25,
+    image: require('@/asset/images/Afro-Buzz-Cut.jpg')
+  },
+  {
+    id: 8,
+    name: 'Shiny Buzz Cut',
+    description: 'Ultra-smooth buzz cut with finishing shine treatment',
+    price: 32,
+    duration: 30,
+    image: require('@/asset/images/Shiny-Buzz-Cut.jpg')
+  },
+  {
+    id: 9,
+    name: 'Trimmer Precision Cut',
+    description: 'Detailed trimmer work for perfect edge-ups and fades',
+    price: 22,
+    duration: 20,
+    image: require('@/asset/images/close-up-trimmer-back-customer-head.jpg')
+  },
+  {
+    id: 10,
+    name: 'Salon Hair Treatment',
+    description: 'Professional hair treatment and conditioning service',
+    price: 40,
+    duration: 50,
+    image: require('@/asset/images/medium-shot-man-hair-salon.jpg')
+  },
+  {
+    id: 11,
+    name: 'African Hair Styling',
+    description: 'Specialized styling for African hair textures and patterns',
+    price: 35,
+    duration: 45,
+    image: require('@/asset/images/african-american-man-guy-sitting-chair-wash-hair.jpg')
+  },
+  {
+    id: 12,
+    name: 'Executive Cut & Style',
+    description: 'Premium business-ready haircut with professional styling',
+    price: 45,
+    duration: 50,
+    image: require('@/asset/images/download (1).jpg')
   }
 ])
 
