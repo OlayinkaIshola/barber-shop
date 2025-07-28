@@ -1,6 +1,11 @@
 <template>
   <div id="app">
-    <nav class="navbar">
+    <nav
+      v-if="showNavigation"
+      class="navbar"
+      :class="{ 'nav-hidden': !showNavigation }"
+      :style="{ background: dynamicNavBackground }"
+    >
       <div class="nav-brand">
         <h2>✂️ Elite Barber Shop</h2>
       </div>
@@ -13,6 +18,81 @@
     <router-view />
   </div>
 </template>
+
+<script setup>
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+const dynamicNavBackground = ref('linear-gradient(180deg, rgba(44, 44, 44, 0.95) 0%, rgba(44, 44, 44, 0.8) 70%, transparent 100%)')
+
+// Pages where navigation should be hidden
+const hiddenNavPages = ['/booking', '/payment', '/payment-success']
+
+const showNavigation = computed(() => {
+  return !hiddenNavPages.includes(route.path)
+})
+
+let observer = null
+
+onMounted(() => {
+  // Only set up intersection observer on pages that show navigation
+  if (showNavigation.value) {
+    setupIntersectionObserver()
+  }
+})
+
+onUnmounted(() => {
+  if (observer) {
+    observer.disconnect()
+  }
+})
+
+const setupIntersectionObserver = () => {
+  // Define section colors based on typical page sections
+  const sectionColors = {
+    'hero': 'linear-gradient(135deg, rgba(44, 44, 44, 0.95) 0%, rgba(26, 26, 26, 0.9) 100%)',
+    'features': 'linear-gradient(180deg, rgba(244, 228, 188, 0.95) 0%, rgba(240, 212, 156, 0.9) 100%)',
+    'stats': 'linear-gradient(135deg, rgba(44, 44, 44, 0.95) 0%, rgba(26, 26, 26, 0.9) 100%)',
+    'gallery': 'linear-gradient(180deg, rgba(244, 228, 188, 0.95) 0%, rgba(240, 212, 156, 0.9) 100%)',
+    'cta-section': 'linear-gradient(135deg, rgba(44, 44, 44, 0.95) 0%, rgba(26, 26, 26, 0.9) 100%)',
+    'services': 'linear-gradient(180deg, rgba(244, 228, 188, 0.95) 0%, rgba(240, 212, 156, 0.9) 100%)',
+    'stylists': 'linear-gradient(180deg, rgba(244, 228, 188, 0.95) 0%, rgba(240, 212, 156, 0.9) 100%)'
+  }
+
+  observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const sectionClass = entry.target.className
+        let newBackground = dynamicNavBackground.value
+
+        // Check which section is intersecting and set appropriate color
+        for (const [section, color] of Object.entries(sectionColors)) {
+          if (sectionClass.includes(section)) {
+            newBackground = color
+            break
+          }
+        }
+
+        dynamicNavBackground.value = newBackground
+      }
+    })
+  }, {
+    threshold: 0.3,
+    rootMargin: '-80px 0px -80px 0px'
+  })
+
+  // Observe sections after a short delay to ensure DOM is ready
+  setTimeout(() => {
+    const sections = document.querySelectorAll('section, .hero, .features, .stats, .gallery, .cta-section, .services, .stylists')
+    sections.forEach(section => {
+      if (section) {
+        observer.observe(section)
+      }
+    })
+  }, 100)
+}
+</script>
 
 <style>
 * {
@@ -32,11 +112,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background: linear-gradient(180deg, rgba(44, 44, 44, 0.95) 0%, rgba(44, 44, 44, 0.8) 70%, transparent 100%);
+  padding: 1.5rem 3rem;
   color: #f4e4bc;
   backdrop-filter: blur(15px);
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.navbar.nav-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
 }
 
 .nav-brand h2 {

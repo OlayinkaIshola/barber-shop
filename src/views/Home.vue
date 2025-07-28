@@ -101,7 +101,7 @@
             <div class="stat-label">Average Rating</div>
           </div>
           <div class="stat-item" data-aos="zoom-in" data-aos-delay="400">
-            <div class="stat-number">6</div>
+            <div class="stat-number">14</div>
             <div class="stat-label">Services Offered</div>
           </div>
         </div>
@@ -629,7 +629,36 @@ onMounted(() => {
 /* Gallery Section */
 .gallery {
   padding: 6rem 0;
-  background: white;
+  background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.gallery::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(244, 228, 188, 0.1) 0%, transparent 50%),
+    linear-gradient(45deg, transparent 30%, rgba(212, 175, 55, 0.05) 50%, transparent 70%);
+  z-index: 1;
+}
+
+.gallery .container {
+  position: relative;
+  z-index: 2;
+}
+
+.gallery .section-header {
+  color: #f4e4bc;
+}
+
+.gallery .section-header h2 {
+  color: #d4af37;
 }
 
 .gallery-grid {
@@ -657,15 +686,17 @@ onMounted(() => {
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(transparent, rgba(44, 44, 44, 0.8));
-  color: #f4e4bc;
+  background: rgba(44, 44, 44, 0.8);
+  color: white;
   padding: 2rem;
+  backdrop-filter: blur(10px);
 }
 
 .gallery-text h4 {
   font-size: 1.3rem;
   margin: 0;
-  color: #d4af37;
+  color: white;
+  font-weight: bold;
 }
 
 /* CTA Section */

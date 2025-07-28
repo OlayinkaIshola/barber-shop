@@ -41,42 +41,119 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label>Card Number</label>
-          <input type="text" v-model="payment.cardNumber" placeholder="1234 5678 9012 3456" required>
-          <div class="card-icons">
-            <span class="card-icon">💳</span>
+        <!-- Payment Method Selection -->
+        <div class="payment-method-selector">
+          <h4>Choose Payment Method</h4>
+          <div class="method-buttons">
+            <button
+              type="button"
+              @click="paymentMethod = 'card'"
+              :class="['method-btn', { active: paymentMethod === 'card' }]"
+            >
+              <span class="method-icon">💳</span>
+              <span>Credit/Debit Card</span>
+            </button>
+            <button
+              type="button"
+              @click="paymentMethod = 'bank'"
+              :class="['method-btn', { active: paymentMethod === 'bank' }]"
+            >
+              <span class="method-icon">🏦</span>
+              <span>Bank Transfer</span>
+            </button>
           </div>
         </div>
 
-        <div class="form-row">
+        <!-- Card Payment Form -->
+        <div v-if="paymentMethod === 'card'" class="payment-fields">
           <div class="form-group">
-            <label>Expiry Date</label>
-            <input type="text" v-model="payment.expiry" placeholder="MM/YY" required>
+            <label>Card Number</label>
+            <div class="input-with-icon">
+              <i class="fas fa-credit-card input-icon"></i>
+              <input type="text" v-model="payment.cardNumber" placeholder="1234 5678 9012 3456" required>
+            </div>
           </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Expiry Date</label>
+              <div class="input-with-icon">
+                <i class="fas fa-calendar-alt input-icon"></i>
+                <input type="text" v-model="payment.expiry" placeholder="MM/YY" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>CVV</label>
+              <div class="input-with-icon">
+                <i class="fas fa-lock input-icon"></i>
+                <input type="text" v-model="payment.cvv" placeholder="123" required>
+              </div>
+            </div>
+          </div>
+
           <div class="form-group">
-            <label>CVV</label>
-            <input type="text" v-model="payment.cvv" placeholder="123" required>
+            <label>Cardholder Name</label>
+            <div class="input-with-icon">
+              <i class="fas fa-user input-icon"></i>
+              <input type="text" v-model="payment.cardholderName" placeholder="Full name as on card" required>
+            </div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label>Cardholder Name</label>
-          <input type="text" v-model="payment.cardholderName" placeholder="Full name as on card" required>
+        <!-- Bank Transfer Form -->
+        <div v-if="paymentMethod === 'bank'" class="payment-fields">
+          <div class="form-group">
+            <label>Account Holder Name</label>
+            <div class="input-with-icon">
+              <i class="fas fa-user input-icon"></i>
+              <input type="text" v-model="bankTransfer.accountHolder" placeholder="Full name on account" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Bank Name</label>
+            <div class="input-with-icon">
+              <i class="fas fa-university input-icon"></i>
+              <input type="text" v-model="bankTransfer.bankName" placeholder="Your bank name" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Account Number</label>
+              <div class="input-with-icon">
+                <i class="fas fa-hashtag input-icon"></i>
+                <input type="text" v-model="bankTransfer.accountNumber" placeholder="Account number" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Routing Number</label>
+              <div class="input-with-icon">
+                <i class="fas fa-route input-icon"></i>
+                <input type="text" v-model="bankTransfer.routingNumber" placeholder="Routing number" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="bank-transfer-info">
+            <div class="info-box">
+              <h5>🏦 Bank Transfer Instructions</h5>
+              <p>Your payment will be processed within 1-2 business days. You will receive a confirmation email with transfer details.</p>
+            </div>
+          </div>
         </div>
 
         <button type="submit" class="pay-btn">
-          <span class="btn-icon">💳</span>
-          <span>Pay ${{ amount }}</span>
+          <span class="btn-icon">{{ paymentMethod === 'card' ? '💳' : '🏦' }}</span>
+          <span>{{ paymentMethod === 'card' ? 'Pay' : 'Transfer' }} ${{ amount }}</span>
           <div class="btn-shine"></div>
         </button>
       </form>
-    </div>
-  </div>
 
-    <div v-if="paymentSuccess" class="success-message">
-      <h2>✅ Payment Successful!</h2>
-      <p>Your appointment has been confirmed. We'll see you soon!</p>
+      <div v-if="paymentSuccess" class="success-message">
+        <h2>✅ Payment Successful!</h2>
+        <p>Your appointment has been confirmed. We'll see you soon!</p>
+      </div>
     </div>
   </div>
 </template>
@@ -91,12 +168,20 @@ const router = useRouter()
 const bookingData = ref(null)
 const paymentSuccess = ref(false)
 const amount = ref(0)
+const paymentMethod = ref('card')
 
 const payment = ref({
   cardNumber: '',
   expiry: '',
   cvv: '',
   cardholderName: ''
+})
+
+const bankTransfer = ref({
+  accountHolder: '',
+  bankName: '',
+  accountNumber: '',
+  routingNumber: ''
 })
 
 const services = ref([
@@ -364,6 +449,120 @@ onMounted(() => {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
+}
+
+/* Input with Icon Styles */
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 15px;
+  color: #d4af37;
+  font-size: 1rem;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.input-with-icon input,
+.input-with-icon select,
+.input-with-icon textarea {
+  padding-left: 45px !important;
+}
+
+/* Payment Method Selector */
+.payment-method-selector {
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: rgba(244, 228, 188, 0.1);
+  border-radius: 15px;
+  border: 2px solid rgba(212, 175, 55, 0.2);
+}
+
+.payment-method-selector h4 {
+  color: #2c2c2c;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.method-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.method-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  background: white;
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  color: #2c2c2c;
+}
+
+.method-btn:hover {
+  border-color: #d4af37;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+}
+
+.method-btn.active {
+  background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
+  border-color: #d4af37;
+  color: #2c2c2c;
+  font-weight: bold;
+}
+
+.method-icon {
+  font-size: 2rem;
+}
+
+.payment-fields {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bank-transfer-info {
+  margin-top: 1.5rem;
+}
+
+.info-box {
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+.info-box h5 {
+  color: #d4af37;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.info-box p {
+  color: #5a5a5a;
+  margin: 0;
+  line-height: 1.5;
 }
 
 .pay-btn {

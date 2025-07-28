@@ -11,8 +11,18 @@
           <img :src="stylist.image" :alt="stylist.name" />
           <div class="image-overlay">
             <div class="social-links">
-              <a href="#" class="social-link">📧</a>
-              <a href="#" class="social-link">📱</a>
+              <a :href="stylist.contact.social.instagram" target="_blank" class="social-link instagram">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a :href="stylist.contact.social.facebook" target="_blank" class="social-link facebook">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a :href="stylist.contact.social.twitter" target="_blank" class="social-link twitter">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a :href="stylist.contact.social.linkedin" target="_blank" class="social-link linkedin">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
             </div>
           </div>
         </div>
@@ -29,6 +39,22 @@
             </div>
           </div>
           <p class="stylist-bio">{{ stylist.bio }}</p>
+
+          <div class="contact-info">
+            <div class="contact-item">
+              <span class="contact-icon">📞</span>
+              <span>{{ stylist.contact.phone }}</span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-icon">📧</span>
+              <span>{{ stylist.contact.email }}</span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-icon">📍</span>
+              <span>{{ stylist.contact.location }}</span>
+            </div>
+          </div>
+
           <div class="stylist-rating">
             <div class="stars">
               <span v-for="star in 5" :key="star" class="star" :class="{ filled: star <= stylist.rating }">⭐</span>
@@ -61,37 +87,7 @@ const route = useRoute()
 
 const selectedService = ref(null)
 
-const stylists = ref([
-  {
-    id: 1,
-    name: 'Mike Johnson',
-    title: 'Master Barber',
-    experience: 8,
-    rating: 4.9,
-    image: require('@/asset/images/man-with-beard-hairdresser-with-client-man-with-comb-scissors.jpg'),
-    specialties: ['Classic Cuts', 'Beard Styling', 'Fade Cuts'],
-    bio: 'Mike is our master barber with over 8 years of experience. He specializes in classic cuts and modern fades, ensuring every client leaves looking sharp and confident.'
-  },
-  {
-    id: 4,
-    name: 'Lisa Davis',
-    title: 'Style Consultant',
-    experience: 7,
-    rating: 4.9,
-    image: require('@/asset/images/download (4).jpg'),
-    specialties: ['Consultations', 'Premium Services', 'Hair Care'],
-    bio: 'Lisa is our style consultant who helps clients choose the perfect look. With 7 years of experience, she offers premium services and expert hair care advice.'
-  },
-  {
-    id: 5,
-    name: 'Marcus Thompson',
-    title: 'Fade Specialist',
-    experience: 4,
-    rating: 4.6,
-    image: require('@/asset/images/download (5).jpg'),
-    specialties: ['Fade Cuts', 'Modern Styles', 'Edge-ups'],
-    bio: 'Marcus is our fade specialist who creates perfect gradients and modern styles. His attention to detail and artistic approach makes him a client favorite.'
-  },
+const stylistsData = [
   {
     id: 6,
     name: 'Antonio Rodriguez',
@@ -100,17 +96,18 @@ const stylists = ref([
     rating: 4.8,
     image: require('@/asset/images/download.jpg'),
     specialties: ['Traditional Cuts', 'Straight Razor', 'Hot Towel'],
-    bio: 'Antonio brings old-school barbering traditions with 10 years of experience. He excels in traditional cuts, straight razor shaves, and hot towel treatments.'
-  },
-  {
-    id: 7,
-    name: 'Jordan Mitchell',
-    title: 'Creative Stylist',
-    experience: 3,
-    rating: 4.5,
-    image: require('@/asset/images/00ebcff8-02ac-454d-8c06-bfe88965e1e5.jpg'),
-    specialties: ['Creative Cuts', 'Artistic Designs', 'Youth Styles'],
-    bio: 'Jordan is our youngest stylist with a fresh perspective on modern cuts. He specializes in creative designs and contemporary styles for younger clients.'
+    bio: 'Antonio brings old-school barbering traditions with 10 years of experience. He excels in traditional cuts, straight razor shaves, and hot towel treatments.',
+    contact: {
+      phone: '(555) 123-4567',
+      email: 'antonio@elitebarbershop.com',
+      location: '123 Main St, Downtown',
+      social: {
+        instagram: 'https://instagram.com/antonio_barber',
+        facebook: 'https://facebook.com/antonio.rodriguez.barber',
+        twitter: 'https://twitter.com/antonio_cuts',
+        linkedin: 'https://linkedin.com/in/antonio-rodriguez-barber'
+      }
+    }
   },
   {
     id: 8,
@@ -120,9 +117,107 @@ const stylists = ref([
     rating: 4.7,
     image: require('@/asset/images/022a725e-8ccc-4824-bfa6-e8984790db8d.jpg'),
     specialties: ['Precision Cuts', 'Beard Sculpting', 'Hair Treatments'],
-    bio: 'Carlos combines technical precision with artistic flair. With 9 years of experience, he excels in precision cuts, beard sculpting, and specialized hair treatments.'
+    bio: 'Carlos combines technical precision with artistic flair. With 9 years of experience, he excels in precision cuts, beard sculpting, and specialized hair treatments.',
+    contact: {
+      phone: '(555) 234-5678',
+      email: 'carlos@elitebarbershop.com',
+      location: '456 Oak Ave, Midtown',
+      social: {
+        instagram: 'https://instagram.com/carlos_precision',
+        facebook: 'https://facebook.com/carlos.mendez.barber',
+        twitter: 'https://twitter.com/carlos_cuts',
+        linkedin: 'https://linkedin.com/in/carlos-mendez-barber'
+      }
+    }
+  },
+  {
+    id: 1,
+    name: 'Mike Johnson',
+    title: 'Master Barber',
+    experience: 8,
+    rating: 4.9,
+    image: require('@/asset/images/man-with-beard-hairdresser-with-client-man-with-comb-scissors.jpg'),
+    specialties: ['Classic Cuts', 'Beard Styling', 'Fade Cuts'],
+    bio: 'Mike is our master barber with over 8 years of experience. He specializes in classic cuts and modern fades, ensuring every client leaves looking sharp and confident.',
+    contact: {
+      phone: '(555) 345-6789',
+      email: 'mike@elitebarbershop.com',
+      location: '789 Pine St, Uptown',
+      social: {
+        instagram: 'https://instagram.com/mike_mastercuts',
+        facebook: 'https://facebook.com/mike.johnson.barber',
+        twitter: 'https://twitter.com/mike_barber',
+        linkedin: 'https://linkedin.com/in/mike-johnson-barber'
+      }
+    }
+  },
+  {
+    id: 4,
+    name: 'Lisa Davis',
+    title: 'Style Consultant',
+    experience: 7,
+    rating: 4.9,
+    image: require('@/asset/images/download (4).jpg'),
+    specialties: ['Consultations', 'Premium Services', 'Hair Care'],
+    bio: 'Lisa is our style consultant who helps clients choose the perfect look. With 7 years of experience, she offers premium services and expert hair care advice.',
+    contact: {
+      phone: '(555) 456-7890',
+      email: 'lisa@elitebarbershop.com',
+      location: '321 Elm St, Westside',
+      social: {
+        instagram: 'https://instagram.com/lisa_styleconsult',
+        facebook: 'https://facebook.com/lisa.davis.stylist',
+        twitter: 'https://twitter.com/lisa_styles',
+        linkedin: 'https://linkedin.com/in/lisa-davis-stylist'
+      }
+    }
+  },
+  {
+    id: 5,
+    name: 'Marcus Thompson',
+    title: 'Fade Specialist',
+    experience: 4,
+    rating: 4.6,
+    image: require('@/asset/images/download (5).jpg'),
+    specialties: ['Fade Cuts', 'Modern Styles', 'Edge-ups'],
+    bio: 'Marcus is our fade specialist who creates perfect gradients and modern styles. His attention to detail and artistic approach makes him a client favorite.',
+    contact: {
+      phone: '(555) 567-8901',
+      email: 'marcus@elitebarbershop.com',
+      location: '654 Maple Dr, Eastside',
+      social: {
+        instagram: 'https://instagram.com/marcus_fades',
+        facebook: 'https://facebook.com/marcus.thompson.barber',
+        twitter: 'https://twitter.com/marcus_fades',
+        linkedin: 'https://linkedin.com/in/marcus-thompson-barber'
+      }
+    }
+  },
+  {
+    id: 7,
+    name: 'Jordan Mitchell',
+    title: 'Creative Stylist',
+    experience: 3,
+    rating: 4.5,
+    image: require('@/asset/images/00ebcff8-02ac-454d-8c06-bfe88965e1e5.jpg'),
+    specialties: ['Creative Cuts', 'Artistic Designs', 'Youth Styles'],
+    bio: 'Jordan is our youngest stylist with a fresh perspective on modern cuts. He specializes in creative designs and contemporary styles for younger clients.',
+    contact: {
+      phone: '(555) 678-9012',
+      email: 'jordan@elitebarbershop.com',
+      location: '987 Cedar Ln, Southside',
+      social: {
+        instagram: 'https://instagram.com/jordan_creative',
+        facebook: 'https://facebook.com/jordan.mitchell.stylist',
+        twitter: 'https://twitter.com/jordan_styles',
+        linkedin: 'https://linkedin.com/in/jordan-mitchell-stylist'
+      }
+    }
   }
-])
+]
+
+// Sort stylists by experience (descending) and create reactive ref
+const stylists = ref(stylistsData.sort((a, b) => b.experience - a.experience))
 
 const continueWithStylist = (stylist) => {
   if (!selectedService.value) {
@@ -162,14 +257,14 @@ onMounted(() => {
 
 <style scoped>
 .stylists {
-  padding: 2rem;
+  padding: 1.6rem;
   background: linear-gradient(135deg, #f4e4bc 0%, #f0d49c 100%);
   min-height: 100vh;
 }
 
 .stylists-header {
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 3.2rem;
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
@@ -213,7 +308,7 @@ onMounted(() => {
 
 .stylist-image {
   position: relative;
-  height: 300px;
+  height: 240px;
   overflow: hidden;
 }
 
@@ -221,11 +316,6 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.stylist-card:hover .stylist-image img {
-  transform: scale(1.1);
 }
 
 .image-overlay {
@@ -254,25 +344,69 @@ onMounted(() => {
 .social-link {
   background: white;
   color: #d4af37;
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   transition: all 0.3s ease;
+  border: 2px solid transparent;
 }
 
 .social-link:hover {
   transform: scale(1.1);
-  background: #d4af37;
   color: white;
 }
 
+.social-link.instagram:hover {
+  background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+}
+
+.social-link.facebook:hover {
+  background: #1877f2;
+}
+
+.social-link.twitter:hover {
+  background: #1da1f2;
+}
+
+.social-link.linkedin:hover {
+  background: #0077b5;
+}
+
+/* Contact Info Styles */
+.contact-info {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: rgba(244, 228, 188, 0.1);
+  border-radius: 10px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #5a5a5a;
+}
+
+.contact-item:last-child {
+  margin-bottom: 0;
+}
+
+.contact-icon {
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
+}
+
 .stylist-info {
-  padding: 2rem;
+  padding: 1.6rem;
 }
 
 .stylist-info h3 {

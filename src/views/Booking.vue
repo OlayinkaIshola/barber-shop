@@ -25,89 +25,162 @@
       <form @submit.prevent="submitBooking" class="booking-form">
         <div class="form-group">
           <label for="name">Full Name *</label>
-          <input
-            type="text"
-            id="name"
-            v-model="bookingForm.name"
-            required
-            placeholder="Enter your full name"
-          />
+          <div class="input-with-icon">
+            <i class="fas fa-user input-icon"></i>
+            <input
+              type="text"
+              id="name"
+              v-model="bookingForm.name"
+              required
+              placeholder="Enter your full name"
+            />
+          </div>
         </div>
 
         <div class="form-group">
           <label for="email">Email *</label>
-          <input
-            type="email"
-            id="email"
-            v-model="bookingForm.email"
-            required
-            placeholder="Enter your email address"
-          />
+          <div class="input-with-icon">
+            <i class="fas fa-envelope input-icon"></i>
+            <input
+              type="email"
+              id="email"
+              v-model="bookingForm.email"
+              required
+              placeholder="Enter your email address"
+            />
+          </div>
         </div>
 
         <div class="form-group">
           <label for="phone">Phone Number *</label>
-          <input
-            type="tel"
-            id="phone"
-            v-model="bookingForm.phone"
-            required
-            placeholder="Enter your phone number"
-          />
+          <div class="input-with-icon">
+            <i class="fas fa-phone input-icon"></i>
+            <input
+              type="tel"
+              id="phone"
+              v-model="bookingForm.phone"
+              required
+              placeholder="Enter your phone number"
+            />
+          </div>
         </div>
 
         <div class="form-group">
-          <label for="location">Preferred Location *</label>
-          <select id="location" v-model="bookingForm.location" required>
-            <option value="">Select location</option>
-            <option value="downtown">Downtown Branch - 123 Main St</option>
-            <option value="uptown">Uptown Branch - 456 Oak Ave</option>
-            <option value="westside">Westside Branch - 789 Pine Rd</option>
-            <option value="eastside">Eastside Branch - 321 Elm St</option>
-          </select>
+          <label for="location">Your Location *</label>
+          <div class="location-input-group">
+            <div class="input-with-icon">
+              <i class="fas fa-map-marker-alt input-icon"></i>
+              <input
+                id="location"
+                v-model="bookingForm.location"
+                type="text"
+                placeholder="Enter your address or use current location"
+                required
+              />
+            </div>
+            <button
+              type="button"
+              @click="getCurrentLocation"
+              class="location-btn"
+              :disabled="locationLoading"
+            >
+              <span v-if="locationLoading">📍</span>
+              <span v-else>🎯</span>
+            </button>
+          </div>
+          <div v-if="locationError" class="location-error">
+            {{ locationError }}
+          </div>
+          <div v-if="locationSuccess" class="location-success">
+            ✅ Location detected successfully!
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="gender">Gender *</label>
+            <div class="input-with-icon">
+              <i class="fas fa-venus-mars input-icon"></i>
+              <select id="gender" v-model="bookingForm.gender" required>
+                <option value="">Select gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="non-binary">Non-binary</option>
+                <option value="prefer-not-to-say">Prefer not to say</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="age">Age *</label>
+            <div class="input-with-icon">
+              <i class="fas fa-birthday-cake input-icon"></i>
+              <input
+                type="number"
+                id="age"
+                v-model="bookingForm.age"
+                required
+                min="1"
+                max="120"
+                placeholder="Enter your age"
+              />
+            </div>
+          </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label for="date">Preferred Date *</label>
-            <input
-              type="date"
-              id="date"
-              v-model="bookingForm.date"
-              required
-              :min="minDate"
-            />
+            <div class="input-with-icon">
+              <i class="fas fa-calendar-alt input-icon"></i>
+              <input
+                type="date"
+                id="date"
+                v-model="bookingForm.date"
+                required
+                :min="minDate"
+              />
+            </div>
           </div>
 
           <div class="form-group">
             <label for="time">Preferred Time *</label>
-            <select id="time" v-model="bookingForm.time" required>
-              <option value="">Select time</option>
-              <option v-for="time in availableTimes" :key="time" :value="time">
-                {{ time }}
+            <div class="input-with-icon">
+              <i class="fas fa-clock input-icon"></i>
+              <select id="time" v-model="bookingForm.time" required>
+                <option value="">Select time</option>
+                <option v-for="time in availableTimes" :key="time" :value="time">
+                  {{ time }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="stylist">Preferred Stylist</label>
+          <div class="input-with-icon">
+            <i class="fas fa-cut input-icon"></i>
+            <select id="stylist" v-model="bookingForm.stylist">
+              <option value="">No preference</option>
+              <option v-for="stylist in stylists" :key="stylist.id" :value="stylist.name">
+                {{ stylist.name }}
               </option>
             </select>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="stylist">Preferred Stylist</label>
-          <select id="stylist" v-model="bookingForm.stylist">
-            <option value="">No preference</option>
-            <option v-for="stylist in stylists" :key="stylist.id" :value="stylist.name">
-              {{ stylist.name }}
-            </option>
-          </select>
-        </div>
-
-        <div class="form-group">
           <label for="notes">Additional Notes</label>
-          <textarea
-            id="notes"
-            v-model="bookingForm.notes"
-            rows="4"
-            placeholder="Any special requests or notes..."
-          ></textarea>
+          <div class="input-with-icon">
+            <i class="fas fa-sticky-note input-icon"></i>
+            <textarea
+              id="notes"
+              v-model="bookingForm.notes"
+              rows="4"
+              placeholder="Any special requests or notes..."
+            ></textarea>
+          </div>
         </div>
 
         <div class="form-actions">
@@ -140,11 +213,18 @@ const bookingForm = ref({
   email: '',
   phone: '',
   location: '',
+  gender: '',
+  age: '',
   date: '',
   time: '',
   stylist: '',
   notes: ''
 })
+
+// Location tracking
+const locationLoading = ref(false)
+const locationError = ref('')
+const locationSuccess = ref(false)
 
 // Available times
 const availableTimes = ref([
@@ -172,6 +252,8 @@ const isFormValid = computed(() => {
          bookingForm.value.email &&
          bookingForm.value.phone &&
          bookingForm.value.location &&
+         bookingForm.value.gender &&
+         bookingForm.value.age &&
          bookingForm.value.date &&
          bookingForm.value.time
 })
@@ -219,6 +301,78 @@ We'll send you a confirmation email shortly.`)
     path: '/payment',
     query: paymentData
   })
+}
+
+const getCurrentLocation = () => {
+  locationLoading.value = true
+  locationError.value = ''
+  locationSuccess.value = false
+
+  if (!navigator.geolocation) {
+    locationError.value = 'Geolocation is not supported by this browser.'
+    locationLoading.value = false
+    return
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      try {
+        const { latitude, longitude } = position.coords
+
+        // Use reverse geocoding to get address (using a free service)
+        const response = await fetch(
+          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+        )
+
+        if (response.ok) {
+          const data = await response.json()
+          const address = `${data.locality}, ${data.principalSubdivision}, ${data.countryName}`
+          bookingForm.value.location = address
+          locationSuccess.value = true
+
+          // Clear success message after 3 seconds
+          setTimeout(() => {
+            locationSuccess.value = false
+          }, 3000)
+        } else {
+          // Fallback to coordinates if reverse geocoding fails
+          bookingForm.value.location = `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)}`
+          locationSuccess.value = true
+        }
+      } catch (error) {
+        locationError.value = 'Failed to get address. Please enter manually.'
+        console.error('Geocoding error:', error)
+      } finally {
+        locationLoading.value = false
+      }
+    },
+    (error) => {
+      let errorMessage = 'Unable to retrieve your location. '
+
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          errorMessage += 'Location access denied by user.'
+          break
+        case error.POSITION_UNAVAILABLE:
+          errorMessage += 'Location information is unavailable.'
+          break
+        case error.TIMEOUT:
+          errorMessage += 'Location request timed out.'
+          break
+        default:
+          errorMessage += 'An unknown error occurred.'
+          break
+      }
+
+      locationError.value = errorMessage
+      locationLoading.value = false
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 300000 // 5 minutes
+    }
+  )
 }
 
 const goBack = () => {
@@ -376,6 +530,94 @@ onMounted(() => {
 .form-group {
   margin-bottom: 2rem;
   position: relative;
+}
+
+/* Input with Icon Styles */
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 15px;
+  color: #d4af37;
+  font-size: 1rem;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.input-with-icon input,
+.input-with-icon select,
+.input-with-icon textarea {
+  padding-left: 45px !important;
+}
+
+/* Location Input Styles */
+.location-input-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.location-input-group input {
+  flex: 1;
+}
+
+.location-btn {
+  background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+  min-width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.location-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.location-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.location-error {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(231, 76, 60, 0.1);
+  border-radius: 4px;
+  border-left: 3px solid #e74c3c;
+}
+
+.location-success {
+  color: #27ae60;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(39, 174, 96, 0.1);
+  border-radius: 4px;
+  border-left: 3px solid #27ae60;
 }
 
 .form-row {

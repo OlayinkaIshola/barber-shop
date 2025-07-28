@@ -52,15 +52,7 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-const services = ref([
-  {
-    id: 1,
-    name: 'Classic Haircut',
-    description: 'Traditional scissor cut with professional styling',
-    price: 25,
-    duration: 30,
-    image: require('@/asset/images/client-doing-hair-cut-barber-shop-salon.jpg')
-  },
+const servicesData = [
   {
     id: 2,
     name: 'Beard Trim',
@@ -68,14 +60,6 @@ const services = ref([
     price: 15,
     duration: 20,
     image: require('@/asset/images/handsome-man-barbershop-shaving-beard.jpg')
-  },
-  {
-    id: 3,
-    name: 'Hair Wash & Style',
-    description: 'Complete wash and professional styling',
-    price: 35,
-    duration: 45,
-    image: require('@/asset/images/woma-washing-man-s-head-barbershop.jpg')
   },
   {
     id: 4,
@@ -86,20 +70,12 @@ const services = ref([
     image: require('@/asset/images/buzz-cut.jpg')
   },
   {
-    id: 5,
-    name: 'Premium Package',
-    description: 'Haircut + beard trim + wash - Complete grooming experience',
-    price: 50,
-    duration: 60,
-    image: require('@/asset/images/young-man-visiting-barbershop.jpg')
-  },
-  {
-    id: 6,
-    name: 'Hot Towel Shave',
-    description: 'Traditional hot towel shave with premium oils and aftercare',
-    price: 30,
-    duration: 40,
-    image: require('@/asset/images/side-view-barber-shaving-client-s-beard-close-up.jpg')
+    id: 1,
+    name: 'Classic Haircut',
+    description: 'Traditional scissor cut with professional styling',
+    price: 25,
+    duration: 30,
+    image: require('@/asset/images/client-doing-hair-cut-barber-shop-salon.jpg')
   },
   {
     id: 7,
@@ -110,12 +86,20 @@ const services = ref([
     image: require('@/asset/images/Afro-Buzz-Cut.jpg')
   },
   {
-    id: 8,
-    name: 'Shiny Buzz Cut',
-    description: 'Ultra-smooth buzz cut with finishing shine treatment',
-    price: 32,
-    duration: 30,
-    image: require('@/asset/images/Shiny-Buzz-Cut.jpg')
+    id: 6,
+    name: 'Hot Towel Shave',
+    description: 'Traditional hot towel shave with premium oils and aftercare',
+    price: 30,
+    duration: 40,
+    image: require('@/asset/images/side-view-barber-shaving-client-s-beard-close-up.jpg')
+  },
+  {
+    id: 3,
+    name: 'Hair Wash & Style',
+    description: 'Complete wash and professional styling',
+    price: 35,
+    duration: 45,
+    image: require('@/asset/images/woma-washing-man-s-head-barbershop.jpg')
   },
   {
     id: 9,
@@ -124,14 +108,6 @@ const services = ref([
     price: 22,
     duration: 20,
     image: require('@/asset/images/close-up-trimmer-back-customer-head.jpg')
-  },
-  {
-    id: 10,
-    name: 'Salon Hair Treatment',
-    description: 'Professional hair treatment and conditioning service',
-    price: 40,
-    duration: 50,
-    image: require('@/asset/images/medium-shot-man-hair-salon.jpg')
   },
   {
     id: 11,
@@ -150,6 +126,14 @@ const services = ref([
     image: require('@/asset/images/download (3).jpg')
   },
   {
+    id: 8,
+    name: 'Shiny Buzz Cut',
+    description: 'Ultra-smooth buzz cut with finishing shine treatment',
+    price: 32,
+    duration: 30,
+    image: require('@/asset/images/Shiny-Buzz-Cut.jpg')
+  },
+  {
     id: 13,
     name: 'African Hair Styling',
     description: 'Specialized styling for African hair textures and patterns',
@@ -158,14 +142,33 @@ const services = ref([
     image: require('@/asset/images/african-american-man-guy-sitting-chair-wash-hair.jpg')
   },
   {
+    id: 10,
+    name: 'Salon Hair Treatment',
+    description: 'Professional hair treatment and conditioning service',
+    price: 40,
+    duration: 50,
+    image: require('@/asset/images/medium-shot-man-hair-salon.jpg')
+  },
+  {
     id: 14,
     name: 'Executive Cut & Style',
     description: 'Premium business-ready haircut with professional styling',
     price: 45,
     duration: 50,
     image: require('@/asset/images/download (1).jpg')
+  },
+  {
+    id: 5,
+    name: 'Premium Package',
+    description: 'Haircut + beard trim + wash - Complete grooming experience',
+    price: 50,
+    duration: 60,
+    image: require('@/asset/images/young-man-visiting-barbershop.jpg')
   }
-])
+]
+
+// Sort services by price and create reactive ref
+const services = ref(servicesData.sort((a, b) => a.price - b.price))
 
 const selectService = (service) => {
   // Check if a stylist is already selected
@@ -216,7 +219,7 @@ const selectService = (service) => {
 .services-header {
   background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
   color: #f4e4bc;
-  padding: 6rem 2rem 4rem;
+  padding: 4.8rem 2rem 3.2rem;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -275,7 +278,7 @@ const selectService = (service) => {
 }
 
 .services-container {
-  padding: 4rem 2rem;
+  padding: 3.2rem 2rem;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -336,7 +339,7 @@ const selectService = (service) => {
 .service-image {
   position: relative;
   width: 100%;
-  height: 250px;
+  height: 200px;
   overflow: hidden;
 }
 
@@ -386,7 +389,7 @@ const selectService = (service) => {
 }
 
 .service-content {
-  padding: 2rem;
+  padding: 1.6rem;
   text-align: center;
 }
 
