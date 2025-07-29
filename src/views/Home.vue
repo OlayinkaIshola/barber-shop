@@ -36,7 +36,7 @@
         </div>
         <div class="hero-image">
           <div class="image-container">
-            <img src="@/asset/images/client-doing-hair-cut-barber-shop-salon.jpg" alt="Professional Barber Service" />
+            <img src="@/assets/images/client-doing-hair-cut-barber-shop-salon.svg" alt="Professional Barber Service" loading="lazy" />
             <div class="image-overlay"></div>
           </div>
         </div>
@@ -120,19 +120,19 @@
         </div>
         <div class="gallery-grid">
           <div class="gallery-item" data-aos="fade-up" data-aos-delay="100">
-            <img src="@/asset/images/Buzz-cut2.jpg" alt="Modern Buzz Cut" />
+            <img src="@/assets/images/Buzz-cut2.svg" alt="Modern Buzz Cut" loading="lazy" />
             <div class="gallery-text">
               <h4>Modern Buzz Cut</h4>
             </div>
           </div>
           <div class="gallery-item" data-aos="fade-up" data-aos-delay="200">
-            <img src="@/asset/images/2042e4cc-11a0-4431-8b9c-92e0fbe6549f.jpg" alt="Professional Styling" />
+            <img src="@/assets/images/professional-styling.svg" alt="Professional Styling" loading="lazy" />
             <div class="gallery-text">
               <h4>Professional Styling</h4>
             </div>
           </div>
           <div class="gallery-item" data-aos="fade-up" data-aos-delay="300">
-            <img src="@/asset/images/604d18da-ae87-4899-a3a5-8168c696f61f.jpg" alt="Expert Grooming" />
+            <img src="@/assets/images/expert-grooming.svg" alt="Expert Grooming" loading="lazy" />
             <div class="gallery-text">
               <h4>Expert Grooming</h4>
             </div>

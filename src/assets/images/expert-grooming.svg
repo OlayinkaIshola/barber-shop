@@ -1,0 +1,119 @@
+<svg width="600" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="groomGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f4e4bc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d4af37;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="beardGrad" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" style="stop-color:#8B4513;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2c2c2c;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#groomGrad)"/>
+  
+  <!-- Border frame -->
+  <rect x="10" y="10" width="580" height="380" fill="none" stroke="#2c2c2c" stroke-width="4" stroke-dasharray="15,5" rx="15"/>
+  
+  <!-- Head silhouette -->
+  <ellipse cx="300" cy="200" rx="110" ry="130" fill="#f0d49c" stroke="#2c2c2c" stroke-width="3"/>
+  
+  <!-- Hair -->
+  <path d="M 190 150 Q 220 100 300 110 Q 380 100 410 150 Q 400 130 380 120 Q 350 110 300 115 Q 250 110 220 120 Q 200 130 190 150" 
+        fill="#2c2c2c" stroke="#2c2c2c" stroke-width="2"/>
+  
+  <!-- Face features -->
+  <!-- Eyes -->
+  <ellipse cx="270" cy="180" rx="8" ry="6" fill="#2c2c2c"/>
+  <ellipse cx="330" cy="180" rx="8" ry="6" fill="#2c2c2c"/>
+  
+  <!-- Eyebrows -->
+  <path d="M 260 170 Q 270 165 280 170" stroke="#2c2c2c" stroke-width="3" fill="none"/>
+  <path d="M 320 170 Q 330 165 340 170" stroke="#2c2c2c" stroke-width="3" fill="none"/>
+  
+  <!-- Nose -->
+  <path d="M 300 190 L 295 205 L 305 205 Z" fill="#2c2c2c" opacity="0.3"/>
+  
+  <!-- Mouth -->
+  <path d="M 285 220 Q 300 230 315 220" stroke="#2c2c2c" stroke-width="2" fill="none"/>
+  
+  <!-- Full beard -->
+  <ellipse cx="300" cy="260" rx="60" ry="40" fill="url(#beardGrad)" stroke="#2c2c2c" stroke-width="2"/>
+  
+  <!-- Mustache -->
+  <ellipse cx="300" cy="215" rx="25" ry="10" fill="url(#beardGrad)" stroke="#2c2c2c" stroke-width="1"/>
+  
+  <!-- Beard texture -->
+  <g opacity="0.6">
+    <circle cx="260" cy="240" r="1.5" fill="#2c2c2c"/>
+    <circle cx="270" cy="245" r="1.5" fill="#2c2c2c"/>
+    <circle cx="280" cy="250" r="1.5" fill="#2c2c2c"/>
+    <circle cx="290" cy="255" r="1.5" fill="#2c2c2c"/>
+    <circle cx="300" cy="260" r="1.5" fill="#2c2c2c"/>
+    <circle cx="310" cy="255" r="1.5" fill="#2c2c2c"/>
+    <circle cx="320" cy="250" r="1.5" fill="#2c2c2c"/>
+    <circle cx="330" cy="245" r="1.5" fill="#2c2c2c"/>
+    <circle cx="340" cy="240" r="1.5" fill="#2c2c2c"/>
+    
+    <circle cx="265" cy="250" r="1.5" fill="#2c2c2c"/>
+    <circle cx="275" cy="255" r="1.5" fill="#2c2c2c"/>
+    <circle cx="285" cy="260" r="1.5" fill="#2c2c2c"/>
+    <circle cx="295" cy="265" r="1.5" fill="#2c2c2c"/>
+    <circle cx="305" cy="265" r="1.5" fill="#2c2c2c"/>
+    <circle cx="315" cy="260" r="1.5" fill="#2c2c2c"/>
+    <circle cx="325" cy="255" r="1.5" fill="#2c2c2c"/>
+    <circle cx="335" cy="250" r="1.5" fill="#2c2c2c"/>
+    
+    <circle cx="270" cy="265" r="1.5" fill="#2c2c2c"/>
+    <circle cx="280" cy="270" r="1.5" fill="#2c2c2c"/>
+    <circle cx="290" cy="275" r="1.5" fill="#2c2c2c"/>
+    <circle cx="300" cy="280" r="1.5" fill="#2c2c2c"/>
+    <circle cx="310" cy="275" r="1.5" fill="#2c2c2c"/>
+    <circle cx="320" cy="270" r="1.5" fill="#2c2c2c"/>
+    <circle cx="330" cy="265" r="1.5" fill="#2c2c2c"/>
+  </g>
+  
+  <!-- Grooming tools -->
+  <g transform="translate(450,150)">
+    <!-- Razor -->
+    <rect x="0" y="0" width="80" height="8" fill="#2c2c2c" rx="4"/>
+    <rect x="70" y="-2" width="15" height="12" fill="#d4af37" rx="2"/>
+    <line x1="0" y1="4" x2="70" y2="4" stroke="#d4af37" stroke-width="1"/>
+  </g>
+  
+  <g transform="translate(80,200)">
+    <!-- Trimmer -->
+    <rect x="0" y="0" width="60" height="25" fill="#2c2c2c" rx="5"/>
+    <rect x="5" y="5" width="50" height="15" fill="#d4af37" rx="2"/>
+    <!-- Trimmer teeth -->
+    <g stroke="#2c2c2c" stroke-width="1">
+      <line x1="10" y1="0" x2="10" y2="-8"/>
+      <line x1="15" y1="0" x2="15" y2="-8"/>
+      <line x1="20" y1="0" x2="20" y2="-8"/>
+      <line x1="25" y1="0" x2="25" y2="-8"/>
+      <line x1="30" y1="0" x2="30" y2="-8"/>
+      <line x1="35" y1="0" x2="35" y2="-8"/>
+      <line x1="40" y1="0" x2="40" y2="-8"/>
+      <line x1="45" y1="0" x2="45" y2="-8"/>
+      <line x1="50" y1="0" x2="50" y2="-8"/>
+    </g>
+  </g>
+  
+  <!-- Scissors -->
+  <g transform="translate(480,250)">
+    <circle cx="0" cy="0" r="10" fill="#2c2c2c"/>
+    <circle cx="25" cy="0" r="10" fill="#2c2c2c"/>
+    <line x1="10" y1="0" x2="15" y2="0" stroke="#d4af37" stroke-width="3"/>
+    <line x1="0" y1="10" x2="12" y2="25" stroke="#2c2c2c" stroke-width="4"/>
+    <line x1="25" y1="10" x2="13" y2="25" stroke="#2c2c2c" stroke-width="4"/>
+  </g>
+  
+  <!-- Title -->
+  <text x="300" y="350" font-family="Arial, sans-serif" font-size="32" font-weight="bold" 
+        text-anchor="middle" fill="#2c2c2c">Expert Grooming</text>
+  
+  <!-- Subtitle -->
+  <text x="300" y="375" font-family="Arial, sans-serif" font-size="16" 
+        text-anchor="middle" fill="#2c2c2c" opacity="0.7">Precision Beard Care</text>
+</svg>

@@ -1,0 +1,98 @@
+<svg width="600" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="styleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f4e4bc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d4af37;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="hairGrad" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#8B4513;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2c2c2c;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#styleGrad)"/>
+  
+  <!-- Border frame -->
+  <rect x="10" y="10" width="580" height="380" fill="none" stroke="#2c2c2c" stroke-width="4" stroke-dasharray="15,5" rx="15"/>
+  
+  <!-- Head silhouette -->
+  <ellipse cx="300" cy="200" rx="110" ry="130" fill="#f0d49c" stroke="#2c2c2c" stroke-width="3"/>
+  
+  <!-- Professional styled hair -->
+  <path d="M 190 150 Q 220 80 300 90 Q 380 80 410 150 Q 400 120 380 110 Q 350 100 300 105 Q 250 100 220 110 Q 200 120 190 150" 
+        fill="url(#hairGrad)" stroke="#2c2c2c" stroke-width="2"/>
+  
+  <!-- Hair texture lines -->
+  <g stroke="#2c2c2c" stroke-width="1" opacity="0.6">
+    <path d="M 220 120 Q 250 110 280 115"/>
+    <path d="M 320 115 Q 350 110 380 120"/>
+    <path d="M 230 130 Q 260 120 290 125"/>
+    <path d="M 310 125 Q 340 120 370 130"/>
+    <path d="M 240 140 Q 270 130 300 135"/>
+    <path d="M 300 135 Q 330 130 360 140"/>
+  </g>
+  
+  <!-- Side part -->
+  <line x1="280" y1="105" x2="285" y2="140" stroke="#2c2c2c" stroke-width="2"/>
+  
+  <!-- Face features -->
+  <!-- Eyes -->
+  <ellipse cx="270" cy="180" rx="8" ry="6" fill="#2c2c2c"/>
+  <ellipse cx="330" cy="180" rx="8" ry="6" fill="#2c2c2c"/>
+  
+  <!-- Eyebrows -->
+  <path d="M 260 170 Q 270 165 280 170" stroke="#2c2c2c" stroke-width="2" fill="none"/>
+  <path d="M 320 170 Q 330 165 340 170" stroke="#2c2c2c" stroke-width="2" fill="none"/>
+  
+  <!-- Nose -->
+  <path d="M 300 190 L 295 205 L 305 205 Z" fill="#2c2c2c" opacity="0.3"/>
+  
+  <!-- Mouth -->
+  <path d="M 285 220 Q 300 230 315 220" stroke="#2c2c2c" stroke-width="2" fill="none"/>
+  
+  <!-- Beard/mustache -->
+  <ellipse cx="300" cy="240" rx="25" ry="15" fill="#2c2c2c" opacity="0.7"/>
+  <ellipse cx="300" cy="215" rx="15" ry="8" fill="#2c2c2c" opacity="0.7"/>
+  
+  <!-- Styling tools -->
+  <g transform="translate(450,100)">
+    <!-- Hair dryer -->
+    <rect x="0" y="0" width="80" height="30" fill="#2c2c2c" rx="15"/>
+    <rect x="70" y="5" width="40" height="20" fill="#d4af37" rx="10"/>
+    <circle cx="20" cy="15" r="8" fill="#d4af37"/>
+    <!-- Air lines -->
+    <line x1="110" y1="10" x2="130" y2="5" stroke="#d4af37" stroke-width="2"/>
+    <line x1="110" y1="15" x2="130" y2="15" stroke="#d4af37" stroke-width="2"/>
+    <line x1="110" y1="20" x2="130" y2="25" stroke="#d4af37" stroke-width="2"/>
+  </g>
+  
+  <!-- Comb -->
+  <g transform="translate(80,120)">
+    <rect x="0" y="0" width="50" height="6" fill="#2c2c2c" rx="3"/>
+    <g>
+      <rect x="5" y="6" width="1.5" height="12" fill="#2c2c2c"/>
+      <rect x="8" y="6" width="1.5" height="12" fill="#2c2c2c"/>
+      <rect x="11" y="6" width="1.5" height="12" fill="#2c2c2c"/>
+      <rect x="14" y="6" width="1.5" height="12" fill="#2c2c2c"/>
+      <rect x="17" y="6" width="1.5" height="12" fill="#2c2c2c"/>
+      <rect x="20" y="6" width="1.5" height="12" fill="#2c2c2c"/>
+      <rect x="23" y="6" width="1.5" height="12" fill="#2c2c2c"/>
+      <rect x="26" y="6" width="1.5" height="12" fill="#2c2c2c"/>
+      <rect x="29" y="6" width="1.5" height="12" fill="#2c2c2c"/>
+      <rect x="32" y="6" width="1.5" height="12" fill="#2c2c2c"/>
+      <rect x="35" y="6" width="1.5" height="12" fill="#2c2c2c"/>
+      <rect x="38" y="6" width="1.5" height="12" fill="#2c2c2c"/>
+      <rect x="41" y="6" width="1.5" height="12" fill="#2c2c2c"/>
+      <rect x="44" y="6" width="1.5" height="12" fill="#2c2c2c"/>
+    </g>
+  </g>
+  
+  <!-- Title -->
+  <text x="300" y="350" font-family="Arial, sans-serif" font-size="32" font-weight="bold" 
+        text-anchor="middle" fill="#2c2c2c">Professional Styling</text>
+  
+  <!-- Subtitle -->
+  <text x="300" y="375" font-family="Arial, sans-serif" font-size="16" 
+        text-anchor="middle" fill="#2c2c2c" opacity="0.7">Expert Hair Design</text>
+</svg>
