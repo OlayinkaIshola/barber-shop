@@ -166,15 +166,16 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { loadStripe } from '@stripe/stripe-js'
+// STRIPE INTEGRATION COMMENTED OUT FOR DEPLOYMENT
+// import { loadStripe } from '@stripe/stripe-js'
 import PageNavigation from '@/components/PageNavigation.vue'
 import { paymentAPI, serviceAPI, stylistAPI } from '../services/api.js'
 
 const route = useRoute()
 const router = useRouter()
 
-// Initialize Stripe
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_51234567890abcdef')
+// STRIPE INITIALIZATION COMMENTED OUT FOR DEPLOYMENT
+// const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_51234567890abcdef')
 
 const bookingData = ref(null)
 const paymentSuccess = ref(false)
@@ -240,12 +241,38 @@ const processPayment = async () => {
 
 const processCardPayment = async () => {
   try {
-    // Create payment intent
+    // SIMULATE CARD PAYMENT PROCESSING (Stripe integration disabled)
+    console.log('Simulating card payment processing...')
+
+    // Validate card details (basic validation for demo)
+    if (!payment.value.cardNumber || !payment.value.expiry || !payment.value.cvv || !payment.value.cardholderName) {
+      throw new Error('Please fill in all card details')
+    }
+
+    // Create simulated payment intent
     const intentResponse = await paymentAPI.createIntent({
       bookingId: bookingData.value.bookingId,
       amount: amount.value
     })
 
+    // SIMULATE successful payment processing
+    await new Promise(resolve => setTimeout(resolve, 2000)) // Simulate processing time
+
+    const simulatedPaymentIntent = {
+      id: intentResponse.data.paymentIntentId,
+      status: 'succeeded'
+    }
+
+    // Confirm payment on backend with simulated data
+    await paymentAPI.confirmPayment({
+      paymentIntentId: simulatedPaymentIntent.id,
+      bookingId: bookingData.value.bookingId
+    })
+
+    // Navigate to success page
+    navigateToSuccess()
+
+    /* ORIGINAL STRIPE CODE COMMENTED OUT
     const stripe = await stripePromise
     const { clientSecret } = intentResponse.data
 
@@ -278,6 +305,7 @@ const processCardPayment = async () => {
       // Navigate to success page
       navigateToSuccess()
     }
+    */
   } catch (error) {
     throw error
   }

@@ -1,8 +1,9 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || 'sk_test_51234567890abcdef');
+// PAYMENT INTEGRATION COMMENTED OUT FOR DEPLOYMENT
+// const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || 'sk_test_51234567890abcdef');
 const Booking = require('../models/Booking');
 const User = require('../models/User');
 
-// @desc    Create payment intent
+// @desc    Create payment intent - SIMULATED FOR DEPLOYMENT
 // @route   POST /api/payments/create-intent
 // @access  Private
 exports.createPaymentIntent = async (req, res) => {
@@ -18,30 +19,25 @@ exports.createPaymentIntent = async (req, res) => {
       });
     }
 
-    // Create payment intent with Stripe
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100), // Convert to cents
+    // SIMULATE payment intent creation (Stripe integration disabled)
+    const simulatedPaymentIntent = {
+      id: `pi_simulated_${Date.now()}`,
+      client_secret: `pi_simulated_${Date.now()}_secret_${Math.random().toString(36).substr(2, 9)}`,
+      amount: Math.round(amount * 100),
       currency,
-      metadata: {
-        bookingId: bookingId,
-        customerId: req.user.id,
-        customerEmail: req.user.email
-      },
-      automatic_payment_methods: {
-        enabled: true,
-      },
-    });
+      status: 'requires_payment_method'
+    };
 
-    // Update booking with payment intent ID
-    booking.paymentIntentId = paymentIntent.id;
+    // Update booking with simulated payment intent ID
+    booking.paymentIntentId = simulatedPaymentIntent.id;
     booking.paymentStatus = 'pending';
     await booking.save();
 
     res.status(200).json({
       success: true,
       data: {
-        clientSecret: paymentIntent.client_secret,
-        paymentIntentId: paymentIntent.id
+        clientSecret: simulatedPaymentIntent.client_secret,
+        paymentIntentId: simulatedPaymentIntent.id
       }
     });
   } catch (error) {
@@ -53,17 +49,18 @@ exports.createPaymentIntent = async (req, res) => {
   }
 };
 
-// @desc    Confirm payment
+// @desc    Confirm payment - SIMULATED FOR DEPLOYMENT
 // @route   POST /api/payments/confirm
 // @access  Private
 exports.confirmPayment = async (req, res) => {
   try {
     const { paymentIntentId, bookingId } = req.body;
 
-    // Retrieve payment intent from Stripe
-    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    // SIMULATE payment confirmation (Stripe integration disabled)
+    // In real implementation, this would retrieve from Stripe
+    const simulatedPaymentStatus = 'succeeded'; // Always succeed for demo
 
-    if (paymentIntent.status === 'succeeded') {
+    if (simulatedPaymentStatus === 'succeeded') {
       // Update booking payment status
       const booking = await Booking.findByIdAndUpdate(
         bookingId,
@@ -71,19 +68,16 @@ exports.confirmPayment = async (req, res) => {
           paymentStatus: 'completed',
           paymentMethod: 'card',
           paymentDate: new Date(),
-          transactionId: paymentIntent.id,
+          transactionId: paymentIntentId,
           status: 'confirmed'
         },
         { new: true }
       ).populate('customer stylist service');
 
-      // Send confirmation email (implement later)
-      // await sendBookingConfirmationEmail(booking);
-
       res.status(200).json({
         success: true,
         data: booking,
-        message: 'Payment confirmed successfully'
+        message: 'Payment confirmed successfully (simulated)'
       });
     } else {
       res.status(400).json({
@@ -128,9 +122,6 @@ exports.processBankTransfer = async (req, res) => {
       { new: true }
     ).populate('customer stylist service');
 
-    // Send bank transfer instructions email (implement later)
-    // await sendBankTransferInstructionsEmail(updatedBooking);
-
     res.status(200).json({
       success: true,
       data: updatedBooking,
@@ -154,7 +145,7 @@ exports.getPaymentHistory = async (req, res) => {
     const skip = (page - 1) * limit;
 
     let query = {};
-    
+
     // Filter by user role
     if (req.user.role === 'customer') {
       query.customer = req.user.id;
@@ -197,7 +188,7 @@ exports.getPaymentHistory = async (req, res) => {
   }
 };
 
-// @desc    Refund payment
+// @desc    Refund payment - SIMULATED FOR DEPLOYMENT
 // @route   POST /api/payments/refund
 // @access  Private/Admin
 exports.refundPayment = async (req, res) => {
@@ -220,22 +211,18 @@ exports.refundPayment = async (req, res) => {
       });
     }
 
-    // Process refund with Stripe
-    const refund = await stripe.refunds.create({
-      payment_intent: booking.transactionId,
-      amount: amount ? Math.round(amount * 100) : undefined, // Partial or full refund
-      reason: 'requested_by_customer',
-      metadata: {
-        bookingId: bookingId,
-        reason: reason
-      }
-    });
+    // SIMULATE refund processing (Stripe integration disabled)
+    const simulatedRefund = {
+      id: `re_simulated_${Date.now()}`,
+      amount: amount ? Math.round(amount * 100) : booking.totalAmount * 100,
+      status: 'succeeded'
+    };
 
     // Update booking status
     await Booking.findByIdAndUpdate(bookingId, {
       paymentStatus: 'refunded',
-      refundId: refund.id,
-      refundAmount: refund.amount / 100,
+      refundId: simulatedRefund.id,
+      refundAmount: simulatedRefund.amount / 100,
       refundReason: reason,
       refundDate: new Date(),
       status: 'cancelled'
@@ -243,8 +230,8 @@ exports.refundPayment = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: refund,
-      message: 'Refund processed successfully'
+      data: simulatedRefund,
+      message: 'Refund processed successfully (simulated)'
     });
   } catch (error) {
     console.error('Refund payment error:', error);
@@ -255,10 +242,20 @@ exports.refundPayment = async (req, res) => {
   }
 };
 
-// @desc    Webhook handler for Stripe events
+// @desc    Webhook handler for Stripe events - DISABLED FOR DEPLOYMENT
 // @route   POST /api/payments/webhook
 // @access  Public
 exports.handleWebhook = async (req, res) => {
+  // WEBHOOK FUNCTIONALITY DISABLED (Stripe integration disabled)
+  console.log('Webhook called but Stripe integration is disabled');
+
+  // For demo purposes, just return success
+  res.json({
+    received: true,
+    message: 'Webhook disabled - Stripe integration commented out'
+  });
+
+  /* ORIGINAL STRIPE WEBHOOK CODE COMMENTED OUT
   const sig = req.headers['stripe-signature'];
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -302,9 +299,10 @@ exports.handleWebhook = async (req, res) => {
   }
 
   res.json({ received: true });
+  */
 };
 
-// @desc    Get payment statistics (Admin only)
+// @desc    Get payment statistics (Admin only) - WORKING WITH SIMULATED DATA
 // @route   GET /api/payments/stats
 // @access  Private/Admin
 exports.getPaymentStats = async (req, res) => {
@@ -318,7 +316,7 @@ exports.getPaymentStats = async (req, res) => {
 
     const { startDate, endDate } = req.query;
     const dateFilter = {};
-    
+
     if (startDate && endDate) {
       dateFilter.paymentDate = {
         $gte: new Date(startDate),
@@ -326,6 +324,7 @@ exports.getPaymentStats = async (req, res) => {
       };
     }
 
+    // This still works with simulated payment data in the database
     const stats = await Booking.aggregate([
       {
         $match: {
@@ -364,7 +363,8 @@ exports.getPaymentStats = async (req, res) => {
       data: {
         overview: stats[0] || { totalRevenue: 0, totalBookings: 0, averageBookingValue: 0 },
         paymentMethods: paymentMethodStats
-      }
+      },
+      note: 'Statistics based on simulated payment data (Stripe integration disabled)'
     });
   } catch (error) {
     console.error('Get payment stats error:', error);
