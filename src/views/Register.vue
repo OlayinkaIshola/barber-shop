@@ -175,8 +175,14 @@
                   id="password"
                   v-model="registrationForm.password"
                   required
-                  placeholder="Create a strong password"
+                  placeholder="Create a strong password (min 8 characters)"
+                  @blur="validatePasswords"
+                  :class="{ 'error': passwordError }"
                 />
+              </div>
+              <div v-if="passwordError" class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                {{ passwordError }}
               </div>
             </div>
 
@@ -190,7 +196,13 @@
                   v-model="registrationForm.confirmPassword"
                   required
                   placeholder="Confirm your password"
+                  @blur="validatePasswords"
+                  :class="{ 'error': confirmPasswordError }"
                 />
+              </div>
+              <div v-if="confirmPasswordError" class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                {{ confirmPasswordError }}
               </div>
             </div>
           </div>
@@ -338,6 +350,14 @@ const availableSpecialties = [
   'Hair Care'
 ]
 
+// Password validation
+const passwordsMatch = computed(() => {
+  return registrationForm.value.password === registrationForm.value.confirmPassword
+})
+
+const passwordError = ref('')
+const confirmPasswordError = ref('')
+
 // Form validation
 const isFormValid = computed(() => {
   return registrationForm.value.firstName &&
@@ -351,9 +371,23 @@ const isFormValid = computed(() => {
          registrationForm.value.bio &&
          registrationForm.value.password &&
          registrationForm.value.confirmPassword &&
-         registrationForm.value.password === registrationForm.value.confirmPassword &&
+         passwordsMatch.value &&
          registrationForm.value.agreeToTerms
 })
+
+// Validate passwords
+const validatePasswords = () => {
+  passwordError.value = ''
+  confirmPasswordError.value = ''
+
+  if (registrationForm.value.password && registrationForm.value.password.length < 8) {
+    passwordError.value = 'Password must be at least 8 characters long'
+  }
+
+  if (registrationForm.value.confirmPassword && !passwordsMatch.value) {
+    confirmPasswordError.value = 'Passwords do not match (case sensitive)'
+  }
+}
 
 // Methods
 const submitRegistration = () => {
@@ -372,17 +406,8 @@ const submitRegistration = () => {
 
   console.log('Registration submitted:', registrationData)
 
-  // Show success message
-  alert(`Registration submitted successfully!
-
-Welcome ${registrationData.fullName}!
-
-Your application is now under review. We'll contact you within 2-3 business days with next steps.
-
-Thank you for your interest in joining Elite Barber Shop!`)
-
-  // Navigate to home page
-  router.push('/')
+  // Navigate to registration success page
+  router.push('/registration-success')
 }
 
 const goBack = () => {
@@ -545,6 +570,22 @@ const goBack = () => {
   box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
 }
 
+.input-with-icon input.error,
+.input-with-icon select.error,
+.input-with-icon textarea.error {
+  border-color: #e74c3c;
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
 .input-with-icon textarea {
   resize: vertical;
   min-height: 100px;
@@ -577,10 +618,10 @@ const goBack = () => {
 }
 
 .specialty-checkbox .checkmark {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border: 2px solid rgba(212, 175, 55, 0.3);
-  border-radius: 4px;
+  border-radius: 6px;
   position: relative;
   transition: all 0.3s ease;
 }
@@ -598,7 +639,7 @@ const goBack = () => {
   transform: translate(-50%, -50%);
   color: white;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 /* Checkbox Group */
@@ -620,10 +661,10 @@ const goBack = () => {
 }
 
 .checkbox-label .checkmark {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border: 2px solid rgba(212, 175, 55, 0.3);
-  border-radius: 4px;
+  border-radius: 6px;
   position: relative;
   transition: all 0.3s ease;
 }
@@ -641,7 +682,7 @@ const goBack = () => {
   transform: translate(-50%, -50%);
   color: white;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .terms-link {

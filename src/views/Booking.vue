@@ -159,19 +159,6 @@
         </div>
 
         <div class="form-group">
-          <label for="stylist">Preferred Stylist</label>
-          <div class="input-with-icon">
-            <i class="fas fa-cut input-icon"></i>
-            <select id="stylist" v-model="bookingForm.stylist">
-              <option value="">No preference</option>
-              <option v-for="stylist in stylists" :key="stylist.id" :value="stylist.name">
-                {{ stylist.name }}
-              </option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group">
           <label for="notes">Additional Notes</label>
           <div class="input-with-icon">
             <i class="fas fa-sticky-note input-icon"></i>
@@ -235,13 +222,7 @@ const availableTimes = ref([
   '3:00 PM', '3:30 PM', '4:00 PM', '4:30 PM', '5:00 PM', '5:30 PM'
 ])
 
-// Available stylists
-const stylists = ref([
-  { id: 1, name: 'Mike Johnson' },
-  { id: 2, name: 'Sarah Williams' },
-  { id: 3, name: 'David Brown' },
-  { id: 4, name: 'Lisa Davis' }
-])
+
 
 // Computed properties
 const minDate = computed(() => {

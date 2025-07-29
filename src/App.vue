@@ -6,8 +6,13 @@
       :class="{ 'nav-hidden': !showNavigation }"
       :style="{ background: dynamicNavBackground }"
     >
-      <div class="nav-brand">
-        <h2>✂️ Elite Barber Shop</h2>
+      <div class="nav-left">
+        <button v-if="showBackButton" @click="goBack" class="back-nav-btn">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="nav-brand">
+          <h2>✂️ Elite Barber Shop</h2>
+        </div>
       </div>
       <div class="nav-links">
         <router-link to="/">Home</router-link>
@@ -33,7 +38,7 @@ const dynamicNavBackground = ref('linear-gradient(180deg, rgba(44, 44, 44, 0.95)
 const isLoggedIn = ref(false)
 
 // Pages where navigation should be hidden
-const hiddenNavPages = ['/booking', '/payment', '/payment-success', '/register', '/login', '/forgot-password']
+const hiddenNavPages = ['/booking', '/payment', '/payment-success', '/register', '/registration-success', '/login', '/forgot-password']
 
 // Check login status
 const checkLoginStatus = () => {
@@ -51,6 +56,19 @@ const logout = () => {
 const showNavigation = computed(() => {
   return !hiddenNavPages.includes(route.path)
 })
+
+const showBackButton = computed(() => {
+  return showNavigation.value && route.path !== '/'
+})
+
+// Navigation methods
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.go(-1)
+  } else {
+    router.push('/')
+  }
+}
 
 let observer = null
 
@@ -145,6 +163,35 @@ const setupIntersectionObserver = () => {
 .navbar.nav-hidden {
   transform: translateY(-100%);
   opacity: 0;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.back-nav-btn {
+  background: rgba(212, 175, 55, 0.2);
+  color: #f4e4bc;
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.back-nav-btn:hover {
+  background: rgba(212, 175, 55, 0.9);
+  color: #2c2c2c;
+  border-color: #d4af37;
+  transform: translateX(-3px);
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
 }
 
 .nav-brand h2 {

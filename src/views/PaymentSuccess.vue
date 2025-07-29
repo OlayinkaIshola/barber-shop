@@ -150,7 +150,7 @@ onMounted(() => {
 <style scoped>
 .payment-success {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #f4e4bc 0%, #f0d49c 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -159,12 +159,34 @@ onMounted(() => {
 
 .success-container {
   background: white;
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border-radius: 25px;
+  box-shadow: 0 20px 40px rgba(44, 44, 44, 0.15);
   max-width: 800px;
   width: 100%;
   overflow: hidden;
   animation: slideUp 0.6s ease-out;
+  border: 3px solid rgba(212, 175, 55, 0.3);
+  position: relative;
+}
+
+.success-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #d4af37, #f4e4bc, #d4af37);
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
@@ -181,35 +203,36 @@ onMounted(() => {
 .success-animation {
   text-align: center;
   padding: 3rem 2rem 2rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
 }
 
 .checkmark-circle {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
   animation: pulse 2s infinite;
+  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
 }
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3), 0 0 0 0 rgba(212, 175, 55, 0.7);
   }
   70% {
-    box-shadow: 0 0 0 20px rgba(40, 167, 69, 0);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3), 0 0 0 20px rgba(212, 175, 55, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3), 0 0 0 0 rgba(212, 175, 55, 0);
   }
 }
 
 .checkmark {
-  color: white;
+  color: #2c2c2c;
   font-size: 3rem;
   font-weight: bold;
   animation: checkmarkAppear 0.5s ease-in-out 0.3s both;
@@ -231,7 +254,7 @@ onMounted(() => {
 }
 
 .success-content h1 {
-  color: #2c3e50;
+  color: #2c2c2c;
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 1rem;
@@ -240,21 +263,22 @@ onMounted(() => {
 
 .success-message {
   text-align: center;
-  color: #666;
+  color: #5a5a5a;
   font-size: 1.2rem;
   margin-bottom: 2rem;
   line-height: 1.6;
 }
 
 .booking-confirmation {
-  background: #f8f9fa;
-  border-radius: 12px;
+  background: rgba(244, 228, 188, 0.2);
+  border: 2px solid rgba(212, 175, 55, 0.2);
+  border-radius: 15px;
   padding: 2rem;
   margin-bottom: 2rem;
 }
 
 .booking-confirmation h2 {
-  color: #2c3e50;
+  color: #2c2c2c;
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
 }
@@ -275,26 +299,29 @@ onMounted(() => {
 
 .detail-row.total {
   border-bottom: none;
-  border-top: 2px solid #667eea;
+  border-top: 2px solid #d4af37;
   padding-top: 1rem;
   margin-top: 1rem;
   font-weight: bold;
   font-size: 1.1rem;
+  background: rgba(212, 175, 55, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
 }
 
 .label {
-  color: #666;
+  color: #5a5a5a;
   font-weight: 500;
 }
 
 .value {
-  color: #2c3e50;
+  color: #2c2c2c;
   font-weight: 600;
 }
 
 .next-steps h3,
 .contact-info h3 {
-  color: #2c3e50;
+  color: #2c2c2c;
   margin-bottom: 1.5rem;
   font-size: 1.3rem;
 }
@@ -309,13 +336,16 @@ onMounted(() => {
 .step {
   text-align: center;
   padding: 1.5rem;
-  background: #f8f9fa;
-  border-radius: 12px;
-  transition: transform 0.3s ease;
+  background: rgba(244, 228, 188, 0.2);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 15px;
+  transition: all 0.3s ease;
 }
 
 .step:hover {
   transform: translateY(-5px);
+  border-color: #d4af37;
+  box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
 }
 
 .step-icon {
@@ -324,20 +354,21 @@ onMounted(() => {
 }
 
 .step h4 {
-  color: #2c3e50;
+  color: #2c2c2c;
   margin-bottom: 0.5rem;
   font-size: 1.1rem;
 }
 
 .step p {
-  color: #666;
+  color: #5a5a5a;
   font-size: 0.9rem;
   line-height: 1.5;
 }
 
 .contact-info {
-  background: #f8f9fa;
-  border-radius: 12px;
+  background: rgba(244, 228, 188, 0.2);
+  border: 2px solid rgba(212, 175, 55, 0.2);
+  border-radius: 15px;
   padding: 2rem;
   margin-bottom: 2rem;
 }
@@ -353,12 +384,13 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #2c3e50;
+  color: #2c2c2c;
   font-weight: 500;
 }
 
 .contact-icon {
   font-size: 1.2rem;
+  color: #d4af37;
 }
 
 .action-buttons {
@@ -383,25 +415,27 @@ onMounted(() => {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 100%);
+  color: #2c2c2c;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  background: linear-gradient(135deg, #f4e4bc 0%, #d4af37 100%);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
 }
 
 .btn-secondary {
-  background: #6c757d;
-  color: white;
+  background: transparent;
+  color: #5a5a5a;
+  border: 2px solid rgba(90, 90, 90, 0.3);
 }
 
 .btn-secondary:hover {
-  background: #5a6268;
+  background: rgba(90, 90, 90, 0.1);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-color: #5a5a5a;
+  box-shadow: 0 4px 15px rgba(90, 90, 90, 0.2);
 }
 
 @media (max-width: 768px) {

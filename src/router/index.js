@@ -6,6 +6,7 @@ import Booking from '../views/Booking.vue'
 import Payment from '../views/Payment.vue'
 import PaymentSuccess from '../views/PaymentSuccess.vue'
 import Register from '../views/Register.vue'
+import RegistrationSuccess from '../views/RegistrationSuccess.vue'
 import Login from '../views/Login.vue'
 import ForgotPassword from '../views/ForgotPassword.vue'
 import EmployeeDashboard from '../views/EmployeeDashboard.vue'
@@ -18,6 +19,7 @@ const routes = [
   { path: '/payment', component: Payment },
   { path: '/payment-success', component: PaymentSuccess },
   { path: '/register', component: Register },
+  { path: '/registration-success', component: RegistrationSuccess },
   { path: '/login', component: Login },
   { path: '/forgot-password', component: ForgotPassword },
   { path: '/employee-dashboard', component: EmployeeDashboard }

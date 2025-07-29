@@ -1,12 +1,12 @@
 <template>
-  <div class="page-navigation">
-    <button @click="goBack" class="nav-btn back-btn">
+  <div class="floating-navigation">
+    <button @click="goBack" class="floating-btn back-btn">
       <i class="fas fa-arrow-left"></i>
-      <span>Back</span>
+      <span class="btn-text">Back</span>
     </button>
-    <button @click="goHome" class="nav-btn home-btn">
+    <button @click="goHome" class="floating-btn home-btn">
       <i class="fas fa-home"></i>
-      <span>Home</span>
+      <span class="btn-text">Home</span>
     </button>
   </div>
 </template>
@@ -32,105 +32,175 @@ const goHome = () => {
 </script>
 
 <style scoped>
-.page-navigation {
+.floating-navigation {
   position: fixed;
-  top: 50%;
+  top: 2rem;
   left: 2rem;
-  transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.5rem;
   z-index: 999;
 }
 
-.nav-btn {
+.floating-btn {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 12px 16px;
-  background: rgba(44, 44, 44, 0.9);
+  padding: 12px;
+  background: rgba(44, 44, 44, 0.95);
   color: #f4e4bc;
   border: 2px solid rgba(212, 175, 55, 0.3);
-  border-radius: 25px;
+  border-radius: 50px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 0.9rem;
   font-weight: 600;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  min-width: 100px;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  width: 48px;
+  height: 48px;
   justify-content: center;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
-.nav-btn:hover {
-  background: rgba(212, 175, 55, 0.9);
+.floating-btn i {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.btn-text {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.85rem;
+  margin-left: 0.5rem;
+}
+
+.floating-btn:hover {
+  width: auto;
+  min-width: 120px;
+  padding: 12px 20px 12px 16px;
+  background: rgba(212, 175, 55, 0.95);
   color: #2c2c2c;
   border-color: #d4af37;
+  box-shadow: 0 8px 30px rgba(212, 175, 55, 0.4);
   transform: translateX(5px);
-  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
 }
 
-.nav-btn i {
-  font-size: 1rem;
+.floating-btn:hover .btn-text {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.floating-btn:hover i {
+  transform: scale(1.1);
+}
+
+.back-btn {
+  background: rgba(52, 152, 219, 0.95);
+  border-color: rgba(52, 152, 219, 0.5);
 }
 
 .back-btn:hover {
+  background: rgba(52, 152, 219, 0.95);
+  border-color: #3498db;
+  box-shadow: 0 8px 30px rgba(52, 152, 219, 0.4);
   transform: translateX(-5px);
 }
 
 .home-btn {
-  background: rgba(212, 175, 55, 0.9);
+  background: rgba(212, 175, 55, 0.95);
   color: #2c2c2c;
   border-color: #d4af37;
 }
 
 .home-btn:hover {
-  background: rgba(44, 44, 44, 0.9);
-  color: #f4e4bc;
-  border-color: rgba(212, 175, 55, 0.3);
+  background: rgba(212, 175, 55, 0.95);
+  color: #2c2c2c;
+  border-color: #d4af37;
+  box-shadow: 0 8px 30px rgba(212, 175, 55, 0.4);
+}
+
+.home-btn i {
+  color: #2c2c2c;
+}
+
+/* Animation for smooth expansion */
+@keyframes expandButton {
+  from {
+    width: 48px;
+  }
+  to {
+    width: 120px;
+  }
 }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
-  .page-navigation {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
-    top: auto;
-    transform: translateX(-50%);
-    flex-direction: row;
-    gap: 1rem;
+  .floating-navigation {
+    top: 1rem;
+    left: 1rem;
+    gap: 0.25rem;
   }
 
-  .nav-btn {
-    min-width: 80px;
-    padding: 10px 14px;
+  .floating-btn {
+    width: 44px;
+    height: 44px;
+    padding: 10px;
+  }
+
+  .floating-btn:hover {
+    min-width: 100px;
+    padding: 10px 16px 10px 12px;
+  }
+
+  .floating-btn i {
+    font-size: 1rem;
+  }
+
+  .btn-text {
     font-size: 0.8rem;
-  }
-
-  .nav-btn span {
-    display: none;
-  }
-
-  .nav-btn i {
-    font-size: 1.1rem;
-  }
-
-  .back-btn:hover,
-  .nav-btn:hover {
-    transform: translateY(-3px);
   }
 }
 
 /* Tablet */
 @media (max-width: 1024px) and (min-width: 769px) {
-  .page-navigation {
-    left: 1rem;
+  .floating-navigation {
+    top: 1.5rem;
+    left: 1.5rem;
   }
 
-  .nav-btn {
-    min-width: 90px;
-    padding: 10px 14px;
+  .floating-btn:hover {
+    min-width: 110px;
   }
+}
+
+/* Ensure buttons don't interfere with navigation */
+.floating-navigation {
+  pointer-events: auto;
+}
+
+.floating-btn {
+  pointer-events: auto;
+}
+
+/* Add subtle pulse animation for better visibility */
+@keyframes subtlePulse {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.floating-btn {
+  animation: subtlePulse 3s ease-in-out infinite;
+}
+
+.floating-btn:hover {
+  animation: none;
 }
 </style>
