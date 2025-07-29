@@ -81,12 +81,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import PageNavigation from '@/components/PageNavigation.vue'
 import { stylistAPI } from '../services/api.js'
 
 const router = useRouter()
-const route = useRoute()
 
 const selectedService = ref(null)
 
@@ -97,7 +96,7 @@ const stylistsData = [
     title: 'Traditional Barber',
     experience: 10,
     rating: 4.8,
-    image: require('@/asset/images/download.jpg'),
+    image: '@/assets/images/expert-grooming.svg',
     specialties: ['Traditional Cuts', 'Straight Razor', 'Hot Towel'],
     bio: 'Antonio brings old-school barbering traditions with 10 years of experience. He excels in traditional cuts, straight razor shaves, and hot towel treatments.',
     contact: {
@@ -118,7 +117,7 @@ const stylistsData = [
     title: 'Senior Barber',
     experience: 9,
     rating: 4.7,
-    image: require('@/asset/images/022a725e-8ccc-4824-bfa6-e8984790db8d.jpg'),
+    image: '@/assets/images/professional-styling.svg',
     specialties: ['Precision Cuts', 'Beard Sculpting', 'Hair Treatments'],
     bio: 'Carlos combines technical precision with artistic flair. With 9 years of experience, he excels in precision cuts, beard sculpting, and specialized hair treatments.',
     contact: {
@@ -139,7 +138,7 @@ const stylistsData = [
     title: 'Master Barber',
     experience: 8,
     rating: 4.9,
-    image: require('@/asset/images/man-with-beard-hairdresser-with-client-man-with-comb-scissors.jpg'),
+    image: '@/assets/images/client-doing-hair-cut-barber-shop-salon.svg',
     specialties: ['Classic Cuts', 'Beard Styling', 'Fade Cuts'],
     bio: 'Mike is our master barber with over 8 years of experience. He specializes in classic cuts and modern fades, ensuring every client leaves looking sharp and confident.',
     contact: {
@@ -160,7 +159,7 @@ const stylistsData = [
     title: 'Style Consultant',
     experience: 7,
     rating: 4.9,
-    image: require('@/asset/images/download (4).jpg'),
+    image: '@/assets/images/professional-styling.svg',
     specialties: ['Consultations', 'Premium Services', 'Hair Care'],
     bio: 'Lisa is our style consultant who helps clients choose the perfect look. With 7 years of experience, she offers premium services and expert hair care advice.',
     contact: {
@@ -181,7 +180,7 @@ const stylistsData = [
     title: 'Fade Specialist',
     experience: 4,
     rating: 4.6,
-    image: require('@/asset/images/download (5).jpg'),
+    image: '@/assets/images/Buzz-cut2.svg',
     specialties: ['Fade Cuts', 'Modern Styles', 'Edge-ups'],
     bio: 'Marcus is our fade specialist who creates perfect gradients and modern styles. His attention to detail and artistic approach makes him a client favorite.',
     contact: {
@@ -202,7 +201,7 @@ const stylistsData = [
     title: 'Creative Stylist',
     experience: 3,
     rating: 4.5,
-    image: require('@/asset/images/00ebcff8-02ac-454d-8c06-bfe88965e1e5.jpg'),
+    image: '@/assets/images/professional-styling.svg',
     specialties: ['Creative Cuts', 'Artistic Designs', 'Youth Styles'],
     bio: 'Jordan is our youngest stylist with a fresh perspective on modern cuts. He specializes in creative designs and contemporary styles for younger clients.',
     contact: {
@@ -234,7 +233,7 @@ const loadStylists = async () => {
       ...stylist,
       id: stylist._id || stylist.id,
       name: stylist.fullName || `${stylist.firstName} ${stylist.lastName}`,
-      image: stylistsData[index % stylistsData.length]?.image || require('@/asset/images/download.jpg'),
+      image: stylistsData[index % stylistsData.length]?.image || '@/assets/images/expert-grooming.svg',
       contact: stylist.contact || {
         phone: stylist.phone || '(555) 123-4567',
         email: stylist.email || 'stylist@elitebarbershop.com',

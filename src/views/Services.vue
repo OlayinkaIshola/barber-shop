@@ -64,7 +64,7 @@ const servicesData = [
     description: 'Professional beard styling and grooming',
     price: 15,
     duration: 20,
-    image: require('@/asset/images/handsome-man-barbershop-shaving-beard.jpg')
+    image: '@/assets/images/expert-grooming.svg'
   },
   {
     id: 4,
@@ -72,7 +72,7 @@ const servicesData = [
     description: 'Clean clipper cut with precision',
     price: 20,
     duration: 15,
-    image: require('@/asset/images/buzz-cut.jpg')
+    image: '@/assets/images/Buzz-cut2.svg'
   },
   {
     id: 1,
@@ -80,7 +80,7 @@ const servicesData = [
     description: 'Traditional scissor cut with professional styling',
     price: 25,
     duration: 30,
-    image: require('@/asset/images/client-doing-hair-cut-barber-shop-salon.jpg')
+    image: '@/assets/images/client-doing-hair-cut-barber-shop-salon.svg'
   },
   {
     id: 7,
@@ -88,7 +88,7 @@ const servicesData = [
     description: 'Specialized buzz cut for afro-textured hair with expert precision',
     price: 28,
     duration: 25,
-    image: require('@/asset/images/Afro-Buzz-Cut.jpg')
+    image: '@/assets/images/Buzz-cut2.svg'
   },
   {
     id: 6,
@@ -96,7 +96,7 @@ const servicesData = [
     description: 'Traditional hot towel shave with premium oils and aftercare',
     price: 30,
     duration: 40,
-    image: require('@/asset/images/side-view-barber-shaving-client-s-beard-close-up.jpg')
+    image: '@/assets/images/expert-grooming.svg'
   },
   {
     id: 3,
@@ -104,7 +104,7 @@ const servicesData = [
     description: 'Complete wash and professional styling',
     price: 35,
     duration: 45,
-    image: require('@/asset/images/woma-washing-man-s-head-barbershop.jpg')
+    image: '@/assets/images/professional-styling.svg'
   },
   {
     id: 9,
@@ -112,7 +112,7 @@ const servicesData = [
     description: 'Detailed trimmer work for perfect edge-ups and fades',
     price: 22,
     duration: 20,
-    image: require('@/asset/images/close-up-trimmer-back-customer-head.jpg')
+    image: '@/assets/images/professional-styling.svg'
   },
   {
     id: 11,
@@ -120,7 +120,7 @@ const servicesData = [
     description: 'Luxurious hair washing service with premium products',
     price: 25,
     duration: 30,
-    image: require('@/asset/images/download (2).jpg')
+    image: '@/assets/images/professional-styling.svg'
   },
   {
     id: 12,
@@ -128,7 +128,7 @@ const servicesData = [
     description: 'Expert beard trimming and styling for the perfect look',
     price: 28,
     duration: 35,
-    image: require('@/asset/images/download (3).jpg')
+    image: '@/assets/images/expert-grooming.svg'
   },
   {
     id: 8,
@@ -136,7 +136,7 @@ const servicesData = [
     description: 'Ultra-smooth buzz cut with finishing shine treatment',
     price: 32,
     duration: 30,
-    image: require('@/asset/images/Shiny-Buzz-Cut.jpg')
+    image: '@/assets/images/Buzz-cut2.svg'
   },
   {
     id: 13,
@@ -144,7 +144,7 @@ const servicesData = [
     description: 'Specialized styling for African hair textures and patterns',
     price: 35,
     duration: 45,
-    image: require('@/asset/images/african-american-man-guy-sitting-chair-wash-hair.jpg')
+    image: '@/assets/images/professional-styling.svg'
   },
   {
     id: 10,
@@ -152,7 +152,7 @@ const servicesData = [
     description: 'Professional hair treatment and conditioning service',
     price: 40,
     duration: 50,
-    image: require('@/asset/images/medium-shot-man-hair-salon.jpg')
+    image: '@/assets/images/professional-styling.svg'
   },
   {
     id: 14,
@@ -160,7 +160,7 @@ const servicesData = [
     description: 'Premium business-ready haircut with professional styling',
     price: 45,
     duration: 50,
-    image: require('@/asset/images/download (1).jpg')
+    image: '@/assets/images/professional-styling.svg'
   },
   {
     id: 5,
@@ -168,7 +168,7 @@ const servicesData = [
     description: 'Haircut + beard trim + wash - Complete grooming experience',
     price: 50,
     duration: 60,
-    image: require('@/asset/images/young-man-visiting-barbershop.jpg')
+    image: '@/assets/images/client-doing-hair-cut-barber-shop-salon.svg'
   }
 ]
 
@@ -182,7 +182,7 @@ const loadServices = async () => {
     const apiServices = response.data.map((service, index) => ({
       ...service,
       id: service._id || service.id,
-      image: servicesData[index % servicesData.length]?.image || require('@/asset/images/client-doing-hair-cut-barber-shop-salon.jpg')
+      image: servicesData[index % servicesData.length]?.image || '@/assets/images/client-doing-hair-cut-barber-shop-salon.svg'
     }))
 
     // If API has no services, use fallback data

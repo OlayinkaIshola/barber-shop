@@ -15,9 +15,15 @@ import AdminDashboard from '../views/AdminDashboard.vue'
 // Route guard function
 const requireAuth = (to, from, next) => {
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
-  if (isLoggedIn) {
+  const token = localStorage.getItem('token')
+
+  if (isLoggedIn && token) {
     next()
   } else {
+    // Clear any stale auth data
+    localStorage.removeItem('isLoggedIn')
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
     next('/login')
   }
 }
@@ -25,8 +31,9 @@ const requireAuth = (to, from, next) => {
 const requireAdmin = (to, from, next) => {
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
   const userData = localStorage.getItem('user')
+  const token = localStorage.getItem('token')
 
-  if (isLoggedIn && userData) {
+  if (isLoggedIn && userData && token) {
     try {
       const user = JSON.parse(userData)
       if (user.role === 'admin') {
@@ -35,9 +42,17 @@ const requireAdmin = (to, from, next) => {
         next('/')
       }
     } catch (error) {
+      // Clear stale auth data
+      localStorage.removeItem('isLoggedIn')
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
       next('/login')
     }
   } else {
+    // Clear stale auth data
+    localStorage.removeItem('isLoggedIn')
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
     next('/login')
   }
 }
@@ -45,8 +60,9 @@ const requireAdmin = (to, from, next) => {
 const requireBarber = (to, from, next) => {
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
   const userData = localStorage.getItem('user')
+  const token = localStorage.getItem('token')
 
-  if (isLoggedIn && userData) {
+  if (isLoggedIn && userData && token) {
     try {
       const user = JSON.parse(userData)
       if (user.role === 'barber' || user.role === 'admin') {
@@ -55,9 +71,17 @@ const requireBarber = (to, from, next) => {
         next('/')
       }
     } catch (error) {
+      // Clear stale auth data
+      localStorage.removeItem('isLoggedIn')
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
       next('/login')
     }
   } else {
+    // Clear stale auth data
+    localStorage.removeItem('isLoggedIn')
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
     next('/login')
   }
 }

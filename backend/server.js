@@ -125,16 +125,33 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
-});
+// Connect to database and start server
+const startServer = async () => {
+  try {
+    await connectDB();
+    const server = app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
+    });
+    return server;
+  } catch (error) {
+    console.error('❌ Failed to start server:', error.message);
+    process.exit(1);
+  }
+};
+
+const server = startServer();
 
 // Handle unhandled promise rejections
-process.on('unhandledRejection', (err, promise) => {
+process.on('unhandledRejection', async (err, promise) => {
   console.error('❌ Unhandled Promise Rejection:', err.message);
-  server.close(() => {
+  const serverInstance = await server;
+  if (serverInstance) {
+    serverInstance.close(() => {
+      process.exit(1);
+    });
+  } else {
     process.exit(1);
-  });
+  }
 });
 
 // Handle uncaught exceptions
@@ -147,18 +164,26 @@ process.on('uncaughtException', (err) => {
 process.on('SIGTERM', async () => {
   console.log('👋 SIGTERM received. Shutting down gracefully...');
   await disconnectDB();
-  server.close(() => {
-    console.log('💤 Process terminated');
-  });
+  const serverInstance = await server;
+  if (serverInstance) {
+    serverInstance.close(() => {
+      console.log('💤 Process terminated');
+    });
+  }
 });
 
 process.on('SIGINT', async () => {
   console.log('👋 SIGINT received. Shutting down gracefully...');
   await disconnectDB();
-  server.close(() => {
-    console.log('💤 Process terminated');
+  const serverInstance = await server;
+  if (serverInstance) {
+    serverInstance.close(() => {
+      console.log('💤 Process terminated');
+      process.exit(0);
+    });
+  } else {
     process.exit(0);
-  });
+  }
 });
 
 module.exports = app;

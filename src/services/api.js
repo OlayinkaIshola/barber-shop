@@ -3,7 +3,7 @@ import axios from 'axios'
 
 // Create axios instance with base configuration
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: process.env.VUE_APP_API_URL || 'http://localhost:5000/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -53,6 +53,7 @@ api.interceptors.response.use(
       // Token expired or invalid
       localStorage.removeItem('token')
       localStorage.removeItem('user')
+      localStorage.removeItem('isLoggedIn')
       window.location.href = '/login'
     }
     return Promise.reject(error.response?.data || error.message)
