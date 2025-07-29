@@ -102,15 +102,45 @@ const bookingSchema = new mongoose.Schema({
   // Payment Information
   paymentMethod: {
     type: String,
-    enum: ['card', 'bank', 'cash', 'pending'],
+    enum: ['card', 'bank_transfer', 'cash', 'pending'],
     default: 'pending'
   },
   paymentStatus: {
     type: String,
-    enum: ['pending', 'paid', 'failed', 'refunded'],
+    enum: ['pending', 'completed', 'failed', 'refunded', 'pending_bank_transfer'],
     default: 'pending'
   },
   paymentId: String,
+  paymentIntentId: {
+    type: String,
+    sparse: true
+  },
+  transactionId: {
+    type: String,
+    sparse: true
+  },
+  paymentDate: {
+    type: Date
+  },
+  refundId: {
+    type: String,
+    sparse: true
+  },
+  refundAmount: {
+    type: Number
+  },
+  refundReason: {
+    type: String
+  },
+  refundDate: {
+    type: Date
+  },
+  bankTransferDetails: {
+    accountHolder: String,
+    bankName: String,
+    accountNumber: String,
+    routingNumber: String
+  },
   totalAmount: {
     type: Number,
     required: [true, 'Total amount is required'],

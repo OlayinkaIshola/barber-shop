@@ -48,11 +48,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import PageNavigation from '@/components/PageNavigation.vue'
+import { serviceAPI } from '../services/api.js'
 
 const router = useRouter()
+const services = ref([])
+const loading = ref(true)
 
 const servicesData = [
   {
@@ -169,33 +172,70 @@ const servicesData = [
   }
 ]
 
-// Sort services by price and create reactive ref
-const services = ref(servicesData.sort((a, b) => a.price - b.price))
+// Load services from API
+const loadServices = async () => {
+  try {
+    loading.value = true
+    const response = await serviceAPI.getAll()
+
+    // Map API data to include fallback images
+    const apiServices = response.data.map((service, index) => ({
+      ...service,
+      id: service._id || service.id,
+      image: servicesData[index % servicesData.length]?.image || require('@/asset/images/client-doing-hair-cut-barber-shop-salon.jpg')
+    }))
+
+    // If API has no services, use fallback data
+    services.value = apiServices.length > 0
+      ? apiServices.sort((a, b) => a.price - b.price)
+      : servicesData.sort((a, b) => a.price - b.price)
+
+  } catch (error) {
+    console.error('Error loading services:', error)
+    // Fallback to hardcoded data if API fails
+    services.value = servicesData.sort((a, b) => a.price - b.price)
+  } finally {
+    loading.value = false
+  }
+}
 
 const selectService = (service) => {
-  // Always store selected service and navigate to stylists page
-  localStorage.setItem('selectedService', JSON.stringify({
-    id: service.id,
+  // Store complete service data with correct MongoDB _id
+  const serviceData = {
+    _id: service._id || service.id, // Use MongoDB _id
+    id: service._id || service.id,  // Keep for compatibility
     name: service.name,
     price: service.price,
-    duration: service.duration
-  }))
+    duration: service.duration,
+    description: service.description,
+    category: service.category
+  }
+
+  localStorage.setItem('selectedService', JSON.stringify(serviceData))
 
   // Navigate to stylists page for stylist selection
   router.push({
     path: '/stylists',
     query: {
       serviceSelected: true,
-      serviceName: service.name
+      serviceId: serviceData._id,
+      serviceName: service.name,
+      servicePrice: service.price,
+      serviceDuration: service.duration
     }
   })
 }
+
+// Load services on component mount
+onMounted(() => {
+  loadServices()
+})
 </script>
 
 <style scoped>
 .services {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f4e4bc 0%, #f0d49c 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
 }
 
 .services-header {
@@ -273,13 +313,14 @@ const selectService = (service) => {
 }
 
 .service-card {
-  background: white;
+  background: linear-gradient(135deg, #2c2c2c 0%, #3a3a3a 100%);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   transition: all 0.4s ease;
   position: relative;
   animation: slideInUp 0.8s ease-out both;
+  border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 .service-card:hover {
@@ -376,14 +417,14 @@ const selectService = (service) => {
 }
 
 .service-content h3 {
-  color: #2c2c2c;
+  color: #f4e4bc;
   margin-bottom: 1rem;
   font-size: 1.6rem;
   font-weight: 700;
 }
 
 .service-content p {
-  color: #5a5a5a;
+  color: #bdc3c7;
   margin-bottom: 1.5rem;
   line-height: 1.6;
   font-size: 1rem;
@@ -408,7 +449,7 @@ const selectService = (service) => {
 }
 
 .duration {
-  color: #5a5a5a;
+  color: #bdc3c7;
   font-style: italic;
   font-size: 0.9rem;
   margin: 0;

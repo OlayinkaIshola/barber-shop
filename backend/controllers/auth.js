@@ -81,9 +81,12 @@ exports.register = async (req, res, next) => {
       user.emailVerificationExpire = undefined;
       await user.save({ validateBeforeSave: false });
 
-      return res.status(500).json({
-        success: false,
-        error: 'Email could not be sent, but account was created successfully'
+      // Send success response even if email fails
+      sendTokenResponse(user, 201, res, {
+        message: role === 'barber'
+          ? 'Barber registration successful! Your application will be reviewed within 24 hours. Note: Confirmation email could not be sent.'
+          : 'Registration successful! Note: Confirmation email could not be sent, but your account is active.',
+        emailSent: false
       });
     }
   } catch (error) {

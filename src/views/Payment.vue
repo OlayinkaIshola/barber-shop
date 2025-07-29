@@ -144,9 +144,13 @@
           </div>
         </div>
 
-        <button type="submit" class="pay-btn">
-          <span class="btn-icon">{{ paymentMethod === 'card' ? '💳' : '🏦' }}</span>
-          <span>{{ paymentMethod === 'card' ? 'Pay' : 'Transfer' }} ${{ amount }}</span>
+        <button type="submit" class="pay-btn" :disabled="processing">
+          <span v-if="processing" class="btn-icon">⏳</span>
+          <span v-else class="btn-icon">{{ paymentMethod === 'card' ? '💳' : '🏦' }}</span>
+          <span>
+            {{ processing ? 'Processing...' :
+               (paymentMethod === 'card' ? 'Pay' : 'Transfer') + ' $' + amount }}
+          </span>
           <div class="btn-shine"></div>
         </button>
       </form>
@@ -162,10 +166,15 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { loadStripe } from '@stripe/stripe-js'
 import PageNavigation from '@/components/PageNavigation.vue'
+import { paymentAPI, serviceAPI, stylistAPI } from '../services/api.js'
 
 const route = useRoute()
 const router = useRouter()
+
+// Initialize Stripe
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_51234567890abcdef')
 
 const bookingData = ref(null)
 const paymentSuccess = ref(false)
@@ -209,29 +218,101 @@ const selectedStylist = computed(() =>
   stylists.value.find(s => s.name == bookingData.value?.stylist)
 )
 
-const processPayment = () => {
-  // Simulate payment processing
-  setTimeout(() => {
-    paymentSuccess.value = true
+const processing = ref(false)
 
-    // Store booking details for success page
-    const successData = {
-      bookingId: route.query.bookingId,
-      amount: amount.value,
-      serviceName: bookingData.value?.serviceName,
-      date: bookingData.value?.date,
-      time: bookingData.value?.time,
-      stylist: bookingData.value?.stylist
+const processPayment = async () => {
+  if (processing.value) return
+  processing.value = true
+
+  try {
+    if (paymentMethod.value === 'card') {
+      await processCardPayment()
+    } else if (paymentMethod.value === 'bank') {
+      await processBankTransferPayment()
+    }
+  } catch (error) {
+    console.error('Payment processing error:', error)
+    alert('Payment failed. Please try again.')
+  } finally {
+    processing.value = false
+  }
+}
+
+const processCardPayment = async () => {
+  try {
+    // Create payment intent
+    const intentResponse = await paymentAPI.createIntent({
+      bookingId: bookingData.value.bookingId,
+      amount: amount.value
+    })
+
+    const stripe = await stripePromise
+    const { clientSecret } = intentResponse.data
+
+    // Confirm payment with Stripe
+    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: {
+          number: payment.value.cardNumber.replace(/\s/g, ''),
+          exp_month: parseInt(payment.value.expiry.split('/')[0]),
+          exp_year: parseInt('20' + payment.value.expiry.split('/')[1]),
+          cvc: payment.value.cvv
+        },
+        billing_details: {
+          name: payment.value.cardholderName
+        }
+      }
+    })
+
+    if (error) {
+      throw new Error(error.message)
     }
 
-    localStorage.setItem('lastBooking', JSON.stringify(successData))
+    if (paymentIntent.status === 'succeeded') {
+      // Confirm payment on backend
+      await paymentAPI.confirmPayment({
+        paymentIntentId: paymentIntent.id,
+        bookingId: bookingData.value.bookingId
+      })
 
-    // Navigate to success page
-    router.push({
-      path: '/payment-success',
-      query: successData
+      // Navigate to success page
+      navigateToSuccess()
+    }
+  } catch (error) {
+    throw error
+  }
+}
+
+const processBankTransferPayment = async () => {
+  try {
+    const response = await paymentAPI.processBankTransfer({
+      bookingId: bookingData.value.bookingId,
+      bankDetails: bankTransfer.value
     })
-  }, 1000)
+
+    alert(response.message)
+    navigateToSuccess()
+  } catch (error) {
+    throw error
+  }
+}
+
+const navigateToSuccess = () => {
+  const successData = {
+    bookingId: bookingData.value.bookingId,
+    amount: amount.value,
+    serviceName: bookingData.value.serviceName,
+    date: bookingData.value.date,
+    time: bookingData.value.time,
+    stylist: bookingData.value.stylistName
+  }
+
+  localStorage.setItem('lastBooking', JSON.stringify(successData))
+
+  router.push({
+    path: '/payment-success',
+    query: successData
+  })
 }
 
 onMounted(() => {

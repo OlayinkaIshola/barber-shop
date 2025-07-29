@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Stylist = require('../models/Stylist');
 const Booking = require('../models/Booking');
 
 // @desc    Get all stylists
@@ -298,17 +299,68 @@ exports.getStylistStats = async (req, res) => {
 // @access  Private/Admin
 exports.approveStylist = async (req, res) => {
   try {
-    const stylist = await User.findOneAndUpdate(
-      { _id: req.params.id, role: 'barber' },
-      { registrationStatus: 'approved' },
-      { new: true }
-    ).select('-password');
+    // Find the barber to approve
+    const barber = await User.findOne({ _id: req.params.id, role: 'barber' });
 
-    if (!stylist) {
+    if (!barber) {
       return res.status(404).json({
         success: false,
-        error: 'Stylist not found'
+        error: 'Barber not found'
       });
+    }
+
+    // Prepare stylist data with defaults if not provided
+    const stylistData = {
+      registrationStatus: 'approved',
+      isActive: true,
+      // Set default availability if not already set
+      availability: barber.availability || {
+        monday: { start: '09:00', end: '17:00', available: true },
+        tuesday: { start: '09:00', end: '17:00', available: true },
+        wednesday: { start: '09:00', end: '17:00', available: true },
+        thursday: { start: '09:00', end: '17:00', available: true },
+        friday: { start: '09:00', end: '17:00', available: true },
+        saturday: { start: '09:00', end: '17:00', available: true },
+        sunday: { start: '10:00', end: '16:00', available: false }
+      },
+      // Set default rating if not set
+      rating: barber.rating || 4.5,
+      // Ensure bio exists
+      bio: barber.bio || `${barber.firstName} is a skilled ${barber.title || 'barber'} with ${barber.experience || 0} years of experience. Specializing in ${barber.specialties?.join(', ') || 'various hair services'}.`
+    };
+
+    // Update the barber to become an active stylist
+    const stylist = await User.findByIdAndUpdate(
+      req.params.id,
+      stylistData,
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    // Create or update the Stylist record for enhanced features
+    let stylistRecord = await Stylist.findOne({ user: req.params.id });
+
+    if (!stylistRecord) {
+      // Create new stylist record
+      stylistRecord = await Stylist.create({
+        user: req.params.id,
+        isActive: true,
+        isAcceptingBookings: true,
+        preferences: {
+          maxBookingsPerDay: 12,
+          breakDuration: 15,
+          bufferTime: 10,
+          acceptWalkIns: true,
+          advanceBookingDays: 30
+        },
+        paymentInfo: {
+          commissionRate: 0.6
+        }
+      });
+    } else {
+      // Update existing record to active
+      stylistRecord.isActive = true;
+      stylistRecord.isAcceptingBookings = true;
+      await stylistRecord.save();
     }
 
     // Send approval email
@@ -317,6 +369,13 @@ exports.approveStylist = async (req, res) => {
       <h1>Registration Approved!</h1>
       <p>Congratulations ${stylist.firstName}!</p>
       <p>Your barber registration has been approved. You can now log in to your account and start accepting bookings.</p>
+      <p><strong>Your Profile:</strong></p>
+      <ul>
+        <li><strong>Title:</strong> ${stylist.title || 'Barber'}</li>
+        <li><strong>Experience:</strong> ${stylist.experience || 0} years</li>
+        <li><strong>Specialties:</strong> ${stylist.specialties?.join(', ') || 'Various services'}</li>
+      </ul>
+      <p>You are now visible to customers in our stylists section and can receive bookings.</p>
       <p>Welcome to the Elite Barber Shop team!</p>
     `;
 
@@ -333,7 +392,7 @@ exports.approveStylist = async (req, res) => {
     res.status(200).json({
       success: true,
       data: stylist,
-      message: 'Stylist approved successfully'
+      message: 'Stylist approved successfully and is now available for bookings'
     });
   } catch (error) {
     console.error('Approve stylist error:', error);

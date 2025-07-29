@@ -46,6 +46,7 @@ const createBookingValidation = [
     .isMongoId()
     .withMessage('Please provide a valid service ID'),
   body('stylist')
+    .optional({ nullable: true })
     .isMongoId()
     .withMessage('Please provide a valid stylist ID'),
   body('date')

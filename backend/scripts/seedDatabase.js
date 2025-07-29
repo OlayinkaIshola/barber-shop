@@ -6,11 +6,8 @@ require('dotenv').config();
 const User = require('../models/User');
 const Service = require('../models/Service');
 
-// Connect to database
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/elite-barber-shop', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+// Import database connection
+const { connectDB } = require('../config/database');
 
 // Sample data
 const users = [
@@ -254,6 +251,9 @@ const services = [
 const seedDatabase = async () => {
   try {
     console.log('🌱 Starting database seeding...');
+
+    // Connect to database
+    await connectDB();
 
     // Clear existing data
     await User.deleteMany({});

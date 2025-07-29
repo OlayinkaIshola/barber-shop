@@ -3,12 +3,24 @@ import axios from 'axios'
 
 // Create axios instance with base configuration
 const api = axios.create({
-  baseURL: process.env.VUE_APP_API_URL || 'http://localhost:5000/api',
+  baseURL: 'http://localhost:5000/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
   }
 })
+
+// Add request logging for debugging
+api.interceptors.request.use(
+  (config) => {
+    console.log('🔄 API Request:', config.method?.toUpperCase(), config.url)
+    return config
+  },
+  (error) => {
+    console.error('❌ API Request Error:', error)
+    return Promise.reject(error)
+  }
+)
 
 // Request interceptor to add auth token
 api.interceptors.request.use(
@@ -27,9 +39,16 @@ api.interceptors.request.use(
 // Response interceptor to handle errors
 api.interceptors.response.use(
   (response) => {
+    console.log('✅ API Response:', response.status, response.config.url)
     return response.data
   },
   (error) => {
+    console.error('❌ API Error:', error.message)
+    if (error.response) {
+      console.error('   Status:', error.response.status)
+      console.error('   Data:', error.response.data)
+    }
+
     if (error.response?.status === 401) {
       // Token expired or invalid
       localStorage.removeItem('token')
@@ -103,6 +122,27 @@ export const userAPI = {
   }),
   getPendingBarbers: () => api.get('/users/pending-barbers'),
   getStats: () => api.get('/users/stats')
+}
+
+// Payment API
+export const paymentAPI = {
+  createIntent: (data) => api.post('/payments/create-intent', data),
+  confirmPayment: (data) => api.post('/payments/confirm', data),
+  processBankTransfer: (data) => api.post('/payments/bank-transfer', data),
+  getHistory: (params) => api.get('/payments/history', { params }),
+  refund: (data) => api.post('/payments/refund', data),
+  getStats: (params) => api.get('/payments/stats', { params })
+}
+
+// Notification API
+export const notificationAPI = {
+  getAll: (params) => api.get('/notifications', { params }),
+  markAsRead: (id) => api.put(`/notifications/${id}/read`),
+  markAllAsRead: () => api.put('/notifications/mark-all-read'),
+  delete: (id) => api.delete(`/notifications/${id}`),
+  getStats: () => api.get('/notifications/stats'),
+  create: (data) => api.post('/notifications', data),
+  sendBulk: (data) => api.post('/notifications/bulk', data)
 }
 
 // Utility functions

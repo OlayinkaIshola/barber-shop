@@ -1,3 +1,4 @@
+
 <template>
   <div class="booking">
     <PageNavigation />
@@ -60,8 +61,10 @@
               type="tel"
               id="phone"
               v-model="bookingForm.phone"
+              @input="formatPhoneNumber"
               required
-              placeholder="Enter your phone number"
+              placeholder="(123) 456-7890"
+              maxlength="14"
             />
           </div>
         </div>
@@ -188,6 +191,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import PageNavigation from '@/components/PageNavigation.vue'
+import { bookingAPI, serviceAPI, stylistAPI, handleApiError } from '../services/api.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -242,48 +246,141 @@ const isFormValid = computed(() => {
 })
 
 // Methods
-const submitBooking = () => {
+const convertTo24Hour = (time12h) => {
+  // If already in 24-hour format, return as is
+  if (!time12h.includes('AM') && !time12h.includes('PM')) {
+    return time12h
+  }
+
+  const [time, modifier] = time12h.split(' ')
+  let [hours, minutes] = time.split(':')
+
+  hours = parseInt(hours, 10)
+
+  if (modifier === 'AM') {
+    if (hours === 12) hours = 0
+  } else if (modifier === 'PM') {
+    if (hours !== 12) hours += 12
+  }
+
+  return `${hours.toString().padStart(2, '0')}:${minutes}`
+}
+
+const formatPhoneNumber = (event) => {
+  let value = event.target.value.replace(/\D/g, '')
+  
+  if (value.length >= 6) {
+    value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6, 10)}`
+  } else if (value.length >= 3) {
+    value = `(${value.slice(0, 3)}) ${value.slice(3)}`
+  }
+  
+  bookingForm.value.phone = value
+}
+
+const getCleanPhoneNumber = (formattedPhone) => {
+  return formattedPhone.replace(/\D/g, '')
+}
+
+const submitBooking = async () => {
   if (!isFormValid.value) {
     alert('Please fill in all required fields.')
     return
   }
 
-  // Here you would typically send the booking data to your backend
-  const bookingData = {
-    ...bookingForm.value,
-    service: selectedService.value,
-    bookingId: Date.now(), // Simple ID generation
-    status: 'confirmed'
-  }
+  try {
+    // Validate required data
+    if (!selectedService.value) {
+      alert('Please select a service first')
+      return
+    }
 
-  console.log('Booking submitted:', bookingData)
+    // Convert 12-hour time to 24-hour format for backend
+    const time24h = convertTo24Hour(bookingForm.value.time)
 
-  // Show success message
-  alert(`Booking confirmed!
-Service: ${selectedService.value?.name}
-Date: ${bookingForm.value.date}
-Time: ${bookingForm.value.time}
-Total: $${selectedService.value?.price}
+    // Prepare booking data for backend
+    const bookingData = {
+      customerInfo: {
+        name: bookingForm.value.name,
+        email: bookingForm.value.email,
+        phone: getCleanPhoneNumber(bookingForm.value.phone),
+        location: bookingForm.value.location,
+        gender: bookingForm.value.gender,
+        age: parseInt(bookingForm.value.age) || 1
+      },
+      service: selectedService.value._id || selectedService.value.id,
+      stylist: selectedStylist.value?._id || selectedStylist.value?.id || null,
+      date: bookingForm.value.date,
+      time: time24h,
+      notes: bookingForm.value.notes || ''
+    }
+
+    console.log('Submitting booking:', bookingData)
+
+    // Submit to backend API
+    const response = await bookingAPI.create(bookingData)
+
+    console.log('Booking successful:', response)
+
+    // Show success message
+    alert(`Booking confirmed!
+Confirmation Code: ${response.data.confirmationCode}
+Service: ${response.data.serviceSnapshot.name}
+Stylist: ${response.data.stylistSnapshot.name}
+Date: ${response.data.formattedDate}
+Time: ${response.data.formattedTime}
+Total: $${response.data.totalAmount}
 
 We'll send you a confirmation email shortly.`)
 
-  // Store booking data for payment and success pages
-  const paymentData = {
-    bookingId: bookingData.bookingId,
-    amount: selectedService.value?.price,
-    serviceName: selectedService.value?.name,
-    date: bookingForm.value.date,
-    time: bookingForm.value.time,
-    stylist: bookingForm.value.stylist || 'No preference'
+    // Store booking data for payment and success pages
+    const paymentData = {
+      bookingId: response.data._id,
+      confirmationCode: response.data.confirmationCode,
+      amount: response.data.totalAmount,
+      serviceName: response.data.serviceSnapshot.name,
+      stylistName: response.data.stylistSnapshot.name,
+      date: bookingForm.value.date,
+      time: bookingForm.value.time,
+      customerName: bookingForm.value.name,
+      customerEmail: bookingForm.value.email
+    }
+
+    localStorage.setItem('bookingData', JSON.stringify(paymentData))
+
+    // Navigate to payment page
+    router.push({
+      path: '/payment',
+      query: paymentData
+    })
+
+  } catch (error) {
+    console.error('Booking error:', error)
+
+    let errorMessage = 'Booking failed. Please try again.'
+
+    // Handle different error response formats
+    if (error && error.response) {
+      const responseData = error.response.data
+      if (responseData && responseData.errors) {
+        // Handle validation errors array
+        const validationErrors = responseData.errors.map(err => err.msg).join('\n')
+        errorMessage = `Validation failed:\n${validationErrors}`
+      }
+    } else if (error && typeof error === 'object') {
+      if (error.error) {
+        errorMessage = error.error
+      } else if (error.message) {
+        errorMessage = error.message
+      } else if (error.data && error.data.error) {
+        errorMessage = error.data.error
+      }
+    } else if (typeof error === 'string') {
+      errorMessage = error
+    }
+
+    alert(`Booking Failed!\n\n${errorMessage}`)
   }
-
-  localStorage.setItem('bookingData', JSON.stringify(paymentData))
-
-  // Navigate to payment page
-  router.push({
-    path: '/payment',
-    query: paymentData
-  })
 }
 
 const getCurrentLocation = () => {
@@ -364,40 +461,59 @@ const goBack = () => {
 
 // Initialize component
 onMounted(() => {
-  // Get service information from query parameters
+  // Get service information from query parameters or localStorage
   if (route.query.serviceId) {
     selectedService.value = {
+      _id: route.query.serviceId,
       id: route.query.serviceId,
       name: route.query.serviceName,
-      price: route.query.price,
-      duration: route.query.duration
+      price: parseFloat(route.query.servicePrice) || 0,
+      duration: parseInt(route.query.serviceDuration) || 0
+    }
+  } else {
+    // Fallback to localStorage
+    const storedService = localStorage.getItem('selectedService')
+    if (storedService) {
+      selectedService.value = JSON.parse(storedService)
     }
   }
 
-  // Pre-select stylist if coming from stylists page
-  if (route.query.preferredStylist) {
-    selectedStylist.value = route.query.preferredStylist
-    bookingForm.value.stylist = route.query.preferredStylist
+  // Get stylist information from query parameters or localStorage
+  if (route.query.stylistId) {
+    selectedStylist.value = {
+      _id: route.query.stylistId,
+      id: route.query.stylistId,
+      name: route.query.stylistName
+    }
+    bookingForm.value.stylist = route.query.stylistName
+  } else {
+    // Fallback to localStorage
+    const storedStylist = localStorage.getItem('selectedStylist')
+    if (storedStylist) {
+      selectedStylist.value = JSON.parse(storedStylist)
+      bookingForm.value.stylist = selectedStylist.value.name
+    }
   }
 
-  // Clear the selected service from localStorage after using it
+  // Clear stored data after using it
   localStorage.removeItem('selectedService')
+  localStorage.removeItem('selectedStylist')
 })
 </script>
 
 <style scoped>
 .booking {
   padding: 2rem;
-  background: linear-gradient(135deg, #f4e4bc 0%, #f0d49c 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   min-height: 100vh;
 }
 
 .booking-container {
   max-width: 900px;
   margin: 0 auto;
-  background: white;
+  background: linear-gradient(135deg, #2c2c2c 0%, #3a3a3a 100%);
   border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(44, 44, 44, 0.15);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   border: 3px solid rgba(212, 175, 55, 0.2);
   position: relative;
@@ -439,7 +555,7 @@ onMounted(() => {
 }
 
 .booking-summary h2 {
-  color: #2c2c2c;
+  color: #f4e4bc;
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
   text-align: center;
@@ -612,7 +728,7 @@ onMounted(() => {
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #2c2c2c;
+  color: #f4e4bc;
   font-weight: 600;
 }
 
@@ -626,8 +742,9 @@ onMounted(() => {
   font-size: 1.1rem;
   transition: all 0.3s ease;
   box-sizing: border-box;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(5px);
+  color: #f4e4bc;
 }
 
 .form-group input:focus,
@@ -636,7 +753,7 @@ onMounted(() => {
   outline: none;
   border-color: #d4af37;
   box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
-  background: white;
+  background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
 }
 
@@ -725,3 +842,4 @@ onMounted(() => {
   }
 }
 </style>
+

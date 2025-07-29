@@ -4,10 +4,6 @@
       <i class="fas fa-arrow-left"></i>
       <span class="btn-text">Back</span>
     </button>
-    <button @click="goHome" class="floating-btn home-btn">
-      <i class="fas fa-home"></i>
-      <span class="btn-text">Home</span>
-    </button>
   </div>
 </template>
 
@@ -26,9 +22,7 @@ const goBack = () => {
   }
 }
 
-const goHome = () => {
-  router.push('/')
-}
+
 </script>
 
 <style scoped>
@@ -110,22 +104,7 @@ const goHome = () => {
   transform: translateX(-5px);
 }
 
-.home-btn {
-  background: rgba(212, 175, 55, 0.95);
-  color: #2c2c2c;
-  border-color: #d4af37;
-}
 
-.home-btn:hover {
-  background: rgba(212, 175, 55, 0.95);
-  color: #2c2c2c;
-  border-color: #d4af37;
-  box-shadow: 0 8px 30px rgba(212, 175, 55, 0.4);
-}
-
-.home-btn i {
-  color: #2c2c2c;
-}
 
 /* Animation for smooth expansion */
 @keyframes expandButton {

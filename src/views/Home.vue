@@ -29,6 +29,9 @@
             <router-link to="/stylists" class="cta-button secondary">
               <span>Meet Our Team</span>
             </router-link>
+            <button @click="testAPI" class="cta-button test-btn">
+              <span>Test API</span>
+            </button>
           </div>
         </div>
         <div class="hero-image">
@@ -156,6 +159,36 @@
 
 <script setup>
 import { onMounted } from 'vue'
+import { authAPI } from '../services/api.js'
+
+const testAPI = async () => {
+  try {
+    console.log('🧪 Testing API connection...')
+
+    // Test health endpoint first
+    const healthResponse = await fetch('http://localhost:5000/api/health')
+    const healthData = await healthResponse.json()
+    console.log('Health check:', healthData)
+
+    // Test login with existing account
+    const response = await authAPI.login({
+      email: 'mike.johnson@elitebarbershop.com',
+      password: 'barber123'
+    })
+
+    console.log('✅ API Test Successful:', response)
+    alert(`API Test Successful!\n\nHealth: ${healthData.message}\nLogged in as: ${response.data.fullName}\nRole: ${response.data.role}\nToken received: ${response.token ? 'Yes' : 'No'}`)
+
+  } catch (error) {
+    console.error('❌ API Test Failed:', error)
+    let errorMsg = 'Unknown error'
+    if (error.error) errorMsg = error.error
+    else if (error.message) errorMsg = error.message
+    else if (typeof error === 'string') errorMsg = error
+
+    alert(`API Test Failed!\n\nError: ${errorMsg}`)
+  }
+}
 
 onMounted(() => {
   // Initialize AOS (Animate On Scroll) if available
@@ -366,6 +399,19 @@ onMounted(() => {
 .cta-button.secondary:hover {
   background: rgba(212, 175, 55, 0.1);
   border-color: #f4e4bc;
+}
+
+.cta-button.test-btn {
+  background: rgba(52, 152, 219, 0.8);
+  color: white;
+  border: 2px solid rgba(52, 152, 219, 0.5);
+  margin-top: 1rem;
+}
+
+.cta-button.test-btn:hover {
+  background: rgba(52, 152, 219, 1);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
 }
 
 .cta-button.gold {
@@ -785,3 +831,4 @@ onMounted(() => {
   }
 }
 </style>
+

@@ -1,7 +1,23 @@
 <template>
   <div class="employee-dashboard">
-    <PageNavigation />
-    
+    <!-- Custom Dashboard Navigation -->
+    <nav class="dashboard-nav">
+      <div class="nav-brand">
+        <h2>✂️ Elite Barber Shop</h2>
+        <span class="nav-subtitle">Employee Dashboard</span>
+      </div>
+      <div class="nav-actions">
+        <button @click="refreshData" class="nav-btn refresh-btn">
+          <i class="fas fa-sync-alt"></i>
+          <span>Refresh</span>
+        </button>
+        <button @click="logout" class="nav-btn logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </nav>
+
     <div class="dashboard-container">
       <!-- Header Section -->
       <div class="dashboard-header">
@@ -233,19 +249,42 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import PageNavigation from '@/components/PageNavigation.vue'
+import { bookingAPI, authAPI, handleApiError } from '../services/api.js'
 
 const router = useRouter()
 
-// Employee data (in a real app, this would come from authentication/API)
+// Employee data (loaded from authentication)
 const employeeData = ref({
-  id: 1,
-  name: 'Mike Johnson',
-  title: 'Master Barber',
-  experience: 8,
-  rating: 4.9,
-  image: require('@/asset/images/man-with-beard-hairdresser-with-client-man-with-comb-scissors.jpg')
+  id: null,
+  name: 'Loading...',
+  title: '',
+  experience: 0,
+  rating: 0,
+  image: null
 })
+
+// Load user data from localStorage or API
+const loadUserData = async () => {
+  try {
+    const userData = JSON.parse(localStorage.getItem('user') || '{}')
+    if (userData._id) {
+      employeeData.value = {
+        id: userData._id,
+        name: userData.fullName || `${userData.firstName} ${userData.lastName}`,
+        title: userData.title || 'Barber',
+        experience: userData.experience || 0,
+        rating: userData.rating || 0,
+        image: userData.profileImage || require('@/asset/images/man-with-beard-hairdresser-with-client-man-with-comb-scissors.jpg')
+      }
+    } else {
+      // If no user data, redirect to login
+      router.push('/login')
+    }
+  } catch (error) {
+    console.error('Error loading user data:', error)
+    router.push('/login')
+  }
+}
 
 // Filter states
 const selectedStatus = ref('all')
@@ -473,8 +512,22 @@ const viewDetails = (booking) => {
   alert(`Booking Details:\n\nCustomer: ${booking.customerName}\nService: ${booking.serviceName}\nDate: ${formatDate(booking.date)}\nTime: ${booking.time}\nPrice: $${booking.servicePrice}\nDuration: ${booking.serviceDuration} minutes\nStatus: ${booking.status}\n\nNotes: ${booking.notes || 'No special notes'}`)
 }
 
+const refreshData = () => {
+  loadUserData()
+  filterBookings()
+  alert('Dashboard data refreshed!')
+}
+
+const logout = () => {
+  localStorage.removeItem('token')
+  localStorage.removeItem('user')
+  localStorage.removeItem('isLoggedIn')
+  router.push('/login')
+}
+
 // Initialize
 onMounted(() => {
+  loadUserData()
   filterBookings()
 })
 </script>
@@ -482,14 +535,81 @@ onMounted(() => {
 <style scoped>
 .employee-dashboard {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f4e4bc 0%, #f0d49c 100%);
-  padding: 2rem 0;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+}
+
+/* Dashboard Navigation */
+.dashboard-nav {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  color: #f4e4bc;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-brand h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #f4e4bc;
+}
+
+.nav-subtitle {
+  font-size: 0.9rem;
+  color: #bdc3c7;
+  font-weight: 500;
+}
+
+.nav-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.nav-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.refresh-btn {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  color: white;
+}
+
+.refresh-btn:hover {
+  background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+}
+
+.logout-btn {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+}
+
+.logout-btn:hover {
+  background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
 }
 
 .dashboard-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 2rem;
 }
 
 /* Header Section */

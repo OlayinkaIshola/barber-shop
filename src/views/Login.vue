@@ -107,6 +107,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import PageNavigation from '@/components/PageNavigation.vue'
+import { authAPI, handleApiError } from '../services/api.js'
 
 const router = useRouter()
 
@@ -159,50 +160,89 @@ const validateForm = () => {
 }
 
 const submitLogin = async () => {
+  console.log('🔄 Login form submitted')
+
   if (!validateForm()) {
+    console.log('❌ Form validation failed')
     return
   }
 
+  console.log('✅ Form validation passed')
   isLoading.value = true
   loginError.value = ''
 
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500))
-
-    // Here you would typically send the login data to your backend
+    // Prepare login data
     const loginData = {
       email: loginForm.value.email,
-      password: loginForm.value.password,
-      rememberMe: loginForm.value.rememberMe,
-      loginTime: new Date().toISOString()
+      password: loginForm.value.password
     }
 
     console.log('Login attempt:', loginData)
 
-    // Simulate login validation
-    // In a real app, this would be handled by your backend
-    if (loginForm.value.email === 'demo@elitebarbershop.com' && loginForm.value.password === 'demo123') {
-      // Successful login
-      alert(`Welcome back!
+    // Submit to backend API
+    const response = await authAPI.login(loginData)
 
-Login successful for ${loginForm.value.email}
+    console.log('Login successful:', response)
 
-You are now signed in to your Elite Barber Shop account.`)
+    // Store authentication data
+    localStorage.setItem('token', response.token)
+    localStorage.setItem('user', JSON.stringify(response.data))
+    localStorage.setItem('isLoggedIn', 'true')
 
-      // Store login state (in a real app, you'd use proper authentication)
-      localStorage.setItem('isLoggedIn', 'true')
-      localStorage.setItem('userEmail', loginForm.value.email)
+    // Show success message
+    alert(`Welcome back, ${response.data.fullName}!
 
-      // Navigate to employee dashboard
-      router.push('/employee-dashboard')
+Login successful. You are now signed in to your Elite Barber Shop account.`)
+
+    // Navigate based on user role
+    if (response.data.role === 'admin') {
+      router.push('/admin-dashboard') // Admin goes to admin dashboard
+    } else if (response.data.role === 'barber') {
+      router.push('/employee-dashboard') // Barber goes to employee dashboard
     } else {
-      // Failed login
-      loginError.value = 'Invalid email or password. Please try again.'
+      router.push('/') // Customer goes to home page
     }
+
   } catch (error) {
-    loginError.value = 'An error occurred during login. Please try again.'
     console.error('Login error:', error)
+    console.error('Error details:', {
+      message: error.message,
+      response: error.response,
+      request: error.request,
+      config: error.config
+    })
+
+    let errorMessage = 'Login failed. Please check your credentials and try again.'
+
+    // Handle different error response formats
+    if (error && error.response) {
+      // Axios error response
+      const responseData = error.response.data
+      if (responseData && responseData.error) {
+        errorMessage = responseData.error
+      } else if (responseData && responseData.message) {
+        errorMessage = responseData.message
+      } else {
+        errorMessage = `Server error: ${error.response.status} ${error.response.statusText}`
+      }
+    } else if (error && error.request) {
+      // Network error
+      errorMessage = 'Network error. Please check your connection and try again.'
+    } else if (error && typeof error === 'object') {
+      if (error.error) {
+        errorMessage = error.error
+      } else if (error.message) {
+        errorMessage = error.message
+      } else if (error.data && error.data.error) {
+        errorMessage = error.data.error
+      }
+    } else if (typeof error === 'string') {
+      errorMessage = error
+    }
+
+    loginError.value = errorMessage
+    alert(`Login Failed!\n\n${errorMessage}`)
   } finally {
     isLoading.value = false
   }
@@ -211,12 +251,39 @@ You are now signed in to your Elite Barber Shop account.`)
 const goBack = () => {
   router.push('/')
 }
+
+// Test function to bypass form validation
+const testLogin = async () => {
+  console.log('🧪 Testing login with hardcoded credentials')
+
+  try {
+    const testData = {
+      email: 'admin@elitebarbershop.com',
+      password: 'admin123'
+    }
+
+    console.log('🔄 Making API call with:', testData)
+    const response = await authAPI.login(testData)
+    console.log('✅ API response:', response)
+
+    alert('Test login successful!')
+
+  } catch (error) {
+    console.error('❌ Test login failed:', error)
+    alert('Test login failed: ' + (error.message || error))
+  }
+}
+
+// Expose test function to window for browser console testing
+if (typeof window !== 'undefined') {
+  window.testLogin = testLogin
+}
 </script>
 
 <style scoped>
 .login {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f4e4bc 0%, #f0d49c 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -226,9 +293,9 @@ const goBack = () => {
 .login-container {
   max-width: 500px;
   width: 100%;
-  background: white;
+  background: linear-gradient(135deg, #2c2c2c 0%, #3a3a3a 100%);
   border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(44, 44, 44, 0.15);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   border: 3px solid rgba(212, 175, 55, 0.2);
   position: relative;
@@ -307,7 +374,7 @@ const goBack = () => {
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #2c2c2c;
+  color: #f4e4bc;
   font-weight: 600;
   font-size: 0.95rem;
 }
@@ -335,13 +402,15 @@ const goBack = () => {
   border-radius: 10px;
   font-size: 1rem;
   transition: all 0.3s ease;
-  background: white;
+  background: rgba(255, 255, 255, 0.1);
+  color: #f4e4bc;
 }
 
 .input-with-icon input:focus {
   outline: none;
   border-color: #d4af37;
   box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .input-with-icon input.error {

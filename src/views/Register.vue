@@ -175,7 +175,7 @@
                   id="password"
                   v-model="registrationForm.password"
                   required
-                  placeholder="Create a strong password (min 8 characters)"
+                  placeholder="Min 8 chars, 1 uppercase, 1 lowercase, 1 number"
                   @blur="validatePasswords"
                   :class="{ 'error': passwordError }"
                 />
@@ -304,6 +304,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import PageNavigation from '@/components/PageNavigation.vue'
+import { authAPI, handleApiError } from '../services/api.js'
 
 const router = useRouter()
 
@@ -329,7 +330,7 @@ const registrationForm = ref({
   agreeToTerms: false
 })
 
-// Available specialties based on existing stylists
+// Available specialties for barbers (must match backend enum exactly)
 const availableSpecialties = [
   'Classic Cuts',
   'Beard Styling',
@@ -360,19 +361,34 @@ const confirmPasswordError = ref('')
 
 // Form validation
 const isFormValid = computed(() => {
-  return registrationForm.value.firstName &&
-         registrationForm.value.lastName &&
-         registrationForm.value.email &&
-         registrationForm.value.phone &&
-         registrationForm.value.address &&
-         registrationForm.value.title &&
-         registrationForm.value.experience &&
-         registrationForm.value.specialties.length > 0 &&
-         registrationForm.value.bio &&
-         registrationForm.value.password &&
-         registrationForm.value.confirmPassword &&
-         passwordsMatch.value &&
-         registrationForm.value.agreeToTerms
+  // Basic required fields for all users
+  const basicFieldsValid = registrationForm.value.firstName &&
+                          registrationForm.value.lastName &&
+                          registrationForm.value.email &&
+                          registrationForm.value.phone &&
+                          registrationForm.value.address &&
+                          registrationForm.value.password &&
+                          registrationForm.value.confirmPassword &&
+                          passwordsMatch.value &&
+                          registrationForm.value.agreeToTerms
+
+  // If user is registering as a barber (has filled barber fields), validate them
+  const isBarberRegistration = registrationForm.value.title ||
+                              registrationForm.value.experience ||
+                              registrationForm.value.specialties.length > 0 ||
+                              registrationForm.value.bio
+
+  if (isBarberRegistration) {
+    // For barber registration, require all barber fields
+    return basicFieldsValid &&
+           registrationForm.value.title &&
+           registrationForm.value.experience &&
+           registrationForm.value.specialties.length > 0 &&
+           registrationForm.value.bio
+  }
+
+  // For customer registration, only basic fields required
+  return basicFieldsValid
 })
 
 // Validate passwords
@@ -380,8 +396,18 @@ const validatePasswords = () => {
   passwordError.value = ''
   confirmPasswordError.value = ''
 
-  if (registrationForm.value.password && registrationForm.value.password.length < 8) {
-    passwordError.value = 'Password must be at least 8 characters long'
+  if (registrationForm.value.password) {
+    const password = registrationForm.value.password
+
+    if (password.length < 8) {
+      passwordError.value = 'Password must be at least 8 characters long'
+    } else if (!/(?=.*[a-z])/.test(password)) {
+      passwordError.value = 'Password must contain at least one lowercase letter'
+    } else if (!/(?=.*[A-Z])/.test(password)) {
+      passwordError.value = 'Password must contain at least one uppercase letter'
+    } else if (!/(?=.*\d)/.test(password)) {
+      passwordError.value = 'Password must contain at least one number'
+    }
   }
 
   if (registrationForm.value.confirmPassword && !passwordsMatch.value) {
@@ -390,44 +416,259 @@ const validatePasswords = () => {
 }
 
 // Methods
-const submitRegistration = () => {
+const submitRegistration = async () => {
+  console.log('🔄 Registration form submitted')
+  console.log('📋 Form data:', registrationForm.value)
+
   if (!isFormValid.value) {
+    console.log('❌ Form validation failed')
     alert('Please fill in all required fields and ensure passwords match.')
     return
   }
 
-  // Here you would typically send the registration data to your backend
-  const registrationData = {
-    ...registrationForm.value,
-    fullName: `${registrationForm.value.firstName} ${registrationForm.value.lastName}`,
-    registrationDate: new Date().toISOString(),
-    status: 'pending' // Pending approval
+  console.log('✅ Form validation passed')
+
+  try {
+    // Create registration data object
+    const registrationData = {
+      firstName: registrationForm.value.firstName,
+      lastName: registrationForm.value.lastName,
+      email: registrationForm.value.email,
+      phone: registrationForm.value.phone,
+      address: registrationForm.value.address,
+      password: registrationForm.value.password,
+      confirmPassword: registrationForm.value.confirmPassword,
+      agreeToTerms: registrationForm.value.agreeToTerms
+    }
+
+    // Add barber-specific fields if provided
+    if (registrationForm.value.title) {
+      registrationData.title = registrationForm.value.title
+      registrationData.experience = registrationForm.value.experience
+      registrationData.specialties = registrationForm.value.specialties
+      registrationData.bio = registrationForm.value.bio
+      registrationData.social = {
+        instagram: registrationForm.value.social.instagram,
+        facebook: registrationForm.value.social.facebook,
+        twitter: registrationForm.value.social.twitter,
+        linkedin: registrationForm.value.social.linkedin
+      }
+    }
+
+    console.log('Submitting registration:', registrationData)
+
+    // Submit to backend API
+    try {
+      console.log('🔄 Making API call to register...')
+      const response = await authAPI.register(registrationData)
+      console.log('✅ Registration API response:', response)
+      console.log('✅ Response type:', typeof response)
+      console.log('✅ Response keys:', Object.keys(response || {}))
+
+      // Show success message for normal registration
+      alert(`Registration Successful!\n\nWelcome to Elite Barber Shop! ${registrationForm.value.title ? 'Your barber registration is pending admin approval.' : 'You can now log in to your account.'}`)
+
+      // Navigate to registration success page
+      router.push('/registration-success')
+      return
+
+    } catch (apiError) {
+      // Check if this is actually a success with email issue
+      if (apiError && apiError.response && apiError.response.data &&
+          apiError.response.data.error &&
+          apiError.response.data.error.includes('Email could not be sent, but account was created successfully')) {
+
+        alert(`Registration Successful!\n\nYour account has been created successfully. ${registrationForm.value.title ? 'Your barber registration is pending admin approval.' : ''}\n\nNote: Confirmation email could not be sent, but your account is active.`)
+        router.push('/registration-success')
+        return
+      }
+
+      // If it's a real error, re-throw it to be handled by the outer catch
+      throw apiError
+    }
+
+  } catch (error) {
+    console.error('Registration error:', error)
+    console.error('Error details:', {
+      message: error.message,
+      response: error.response,
+      request: error.request
+    })
+
+    let errorMessage = 'Registration failed. Please try again.'
+
+    // Handle different error response formats
+    if (error && error.response) {
+      // Axios error response
+      const responseData = error.response.data
+      if (responseData && responseData.error) {
+        errorMessage = responseData.error
+      } else if (responseData && responseData.message) {
+        errorMessage = responseData.message
+      } else if (responseData && responseData.errors) {
+        // Handle validation errors array
+        const validationErrors = responseData.errors.map(err => err.msg || err.message || err).join('\n')
+        errorMessage = `Validation failed:\n${validationErrors}`
+      } else {
+        errorMessage = `Server error: ${error.response.status} ${error.response.statusText}`
+      }
+    } else if (error && error.request) {
+      // Network error
+      errorMessage = 'Network error. Please check your connection and try again.'
+    } else if (error && typeof error === 'object') {
+      if (error.error) {
+        errorMessage = error.error
+      } else if (error.message) {
+        errorMessage = error.message
+      } else if (error.data && error.data.error) {
+        errorMessage = error.data.error
+      }
+    } else if (typeof error === 'string') {
+      errorMessage = error
+    }
+
+    alert(`Registration Failed!\n\n${errorMessage}`)
   }
-
-  console.log('Registration submitted:', registrationData)
-
-  // Navigate to registration success page
-  router.push('/registration-success')
 }
 
 const goBack = () => {
   router.push('/')
+}
+
+// Test function for barber registration
+const testBarberRegistration = async () => {
+  console.log('🧪 Testing barber registration with hardcoded data')
+
+  try {
+    const testData = {
+      firstName: 'Test',
+      lastName: 'Barber',
+      email: `test.barber.${Date.now()}@example.com`,
+      phone: '5551234567',
+      address: '123 Test Street, Test City, TS 12345',
+      password: 'Password123',
+      confirmPassword: 'Password123',
+      agreeToTerms: true,
+      title: 'Senior Barber',
+      experience: 5,
+      specialties: ['Classic Cuts', 'Beard Styling'],
+      bio: 'Test barber with 5 years of experience',
+      social: {
+        instagram: '',
+        facebook: '',
+        twitter: '',
+        linkedin: ''
+      }
+    }
+
+    console.log('🔄 Making API call with:', testData)
+    const response = await authAPI.register(testData)
+    console.log('✅ API response:', response)
+
+    alert('Test barber registration successful!')
+
+  } catch (error) {
+    console.error('❌ Test registration failed:', error)
+    alert('Test registration failed: ' + (error.message || error))
+  }
+}
+
+// Simple customer registration test
+const testCustomerRegistration = async () => {
+  console.log('🧪 Testing customer registration with hardcoded data')
+
+  try {
+    const testData = {
+      firstName: 'Test',
+      lastName: 'Customer',
+      email: `test.customer.${Date.now()}@example.com`,
+      phone: '5551234567',
+      address: '123 Test Street, Test City, TS 12345',
+      password: 'Password123',
+      confirmPassword: 'Password123',
+      agreeToTerms: true
+    }
+
+    console.log('🔄 Making API call with:', testData)
+    const response = await authAPI.register(testData)
+    console.log('✅ API response:', response)
+
+    alert('Test customer registration successful!')
+
+  } catch (error) {
+    console.error('❌ Test registration failed:', error)
+    alert('Test registration failed: ' + (error.message || error))
+  }
+}
+
+// Debug function to check form state
+const debugFormState = () => {
+  console.log('🔍 Form Debug Info:')
+  console.log('Form data:', registrationForm.value)
+  console.log('Passwords match:', passwordsMatch.value)
+  console.log('Form valid:', isFormValid.value)
+  console.log('Password:', registrationForm.value.password)
+  console.log('Confirm password:', registrationForm.value.confirmPassword)
+  console.log('Agree to terms:', registrationForm.value.agreeToTerms)
+}
+
+// Test function for quick barber registration
+const testQuickBarberRegistration = async () => {
+  const randomId = Math.floor(Math.random() * 1000)
+  const testBarber = {
+    firstName: `Test`,
+    lastName: `Barber${randomId}`,
+    email: `testbarber${randomId}@example.com`,
+    phone: `555-${String(randomId).padStart(4, '0')}`,
+    address: `${randomId} Test Street, Test City`,
+    password: 'testpass123',
+    confirmPassword: 'testpass123',
+    role: 'barber',
+    title: 'Senior Barber',
+    experience: Math.floor(Math.random() * 10) + 1,
+    specialties: ['Classic Cuts', 'Beard Styling', 'Fade Cuts'],
+    bio: `Test barber with ${Math.floor(Math.random() * 10) + 1} years of experience.`,
+    social: {
+      instagram: `https://instagram.com/testbarber${randomId}`,
+      facebook: `https://facebook.com/testbarber${randomId}`,
+      twitter: `https://twitter.com/testbarber${randomId}`,
+      linkedin: `https://linkedin.com/in/testbarber${randomId}`
+    }
+  }
+
+  try {
+    const response = await authAPI.register(testBarber)
+    console.log('✅ Test barber registered:', response)
+    alert(`Test barber registered successfully!\nEmail: ${testBarber.email}\nPassword: testpass123\n\nYou can now approve this barber in the admin dashboard.`)
+    return response
+  } catch (error) {
+    console.error('❌ Test barber registration failed:', error)
+    alert('Test barber registration failed: ' + (error.response?.data?.error || error.message))
+  }
+}
+
+// Expose test functions to window for browser console testing
+if (typeof window !== 'undefined') {
+  window.testBarberRegistration = testBarberRegistration
+  window.testCustomerRegistration = testCustomerRegistration
+  window.testQuickBarberRegistration = testQuickBarberRegistration
+  window.debugFormState = debugFormState
 }
 </script>
 
 <style scoped>
 .register {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f4e4bc 0%, #f0d49c 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   padding: 2rem 0;
 }
 
 .register-container {
   max-width: 1000px;
   margin: 0 auto;
-  background: white;
+  background: linear-gradient(135deg, #2c2c2c 0%, #3a3a3a 100%);
   border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(44, 44, 44, 0.15);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   border: 3px solid rgba(212, 175, 55, 0.2);
   position: relative;
@@ -529,7 +770,7 @@ const goBack = () => {
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #2c2c2c;
+  color: #f4e4bc;
   font-weight: 600;
   font-size: 0.95rem;
 }
@@ -559,7 +800,8 @@ const goBack = () => {
   border-radius: 10px;
   font-size: 1rem;
   transition: all 0.3s ease;
-  background: white;
+  background: rgba(255, 255, 255, 0.1);
+  color: #f4e4bc;
 }
 
 .input-with-icon input:focus,
@@ -568,6 +810,7 @@ const goBack = () => {
   outline: none;
   border-color: #d4af37;
   box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .input-with-icon input.error,

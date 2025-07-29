@@ -19,34 +19,60 @@ exports.createBooking = async (req, res) => {
       });
     }
 
-    // Verify stylist exists and is approved
-    const stylistDoc = await User.findOne({
-      _id: stylist,
-      role: 'barber',
-      registrationStatus: 'approved',
-      isActive: true
-    });
-    if (!stylistDoc) {
-      return res.status(404).json({
-        success: false,
-        error: 'Stylist not found or not available'
+    let stylistDoc = null;
+
+    // If stylist is provided, verify it exists and is approved
+    if (stylist) {
+      stylistDoc = await User.findOne({
+        _id: stylist,
+        role: 'barber',
+        registrationStatus: 'approved',
+        isActive: true
       });
+      if (!stylistDoc) {
+        return res.status(404).json({
+          success: false,
+          error: 'Stylist not found or not available'
+        });
+      }
+
+      // Check availability for specific stylist
+      const isAvailable = await checkTimeSlotAvailability(stylist, date, time, serviceDoc.duration);
+      if (!isAvailable) {
+        return res.status(400).json({
+          success: false,
+          error: 'Selected time slot is not available'
+        });
+      }
+    } else {
+      // If no stylist specified, assign to any available stylist
+      const availableStylists = await User.find({
+        role: 'barber',
+        registrationStatus: 'approved',
+        isActive: true
+      });
+
+      for (const availableStylist of availableStylists) {
+        const isAvailable = await checkTimeSlotAvailability(availableStylist._id, date, time, serviceDoc.duration);
+        if (isAvailable) {
+          stylistDoc = availableStylist;
+          break;
+        }
+      }
+
+      if (!stylistDoc) {
+        return res.status(400).json({
+          success: false,
+          error: 'No stylists available for the selected time slot'
+        });
+      }
     }
 
-    // Check availability
-    const isAvailable = await checkTimeSlotAvailability(stylist, date, time, serviceDoc.duration);
-    if (!isAvailable) {
-      return res.status(400).json({
-        success: false,
-        error: 'Selected time slot is not available'
-      });
-    }
-
-    // Create booking
+    // Create booking with assigned stylist
     const booking = await Booking.create({
       customerInfo,
       service,
-      stylist,
+      stylist: stylistDoc._id, // Use the assigned stylist
       date: new Date(date),
       time,
       notes,
@@ -627,6 +653,48 @@ const sendBookingConfirmationEmail = async (booking, recipient) => {
     subject,
     html: message
   });
+};
+
+// @desc    Get my bookings (customer)
+// @route   GET /api/bookings/my-bookings
+// @access  Private
+exports.getMyBookings = async (req, res) => {
+  try {
+    const { page = 1, limit = 10, status } = req.query;
+    const skip = (page - 1) * limit;
+
+    let query = { customer: req.user.id };
+
+    if (status) {
+      query.status = status;
+    }
+
+    const bookings = await Booking.find(query)
+      .populate('service', 'name description price duration')
+      .populate('stylist', 'firstName lastName profileImage rating')
+      .sort({ date: -1, time: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const total = await Booking.countDocuments(query);
+
+    res.status(200).json({
+      success: true,
+      data: bookings,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    });
+  } catch (error) {
+    console.error('Get my bookings error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get bookings'
+    });
+  }
 };
 
 // Helper function to update stylist rating

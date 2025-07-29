@@ -83,6 +83,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import PageNavigation from '@/components/PageNavigation.vue'
+import { stylistAPI } from '../services/api.js'
 
 const router = useRouter()
 const route = useRoute()
@@ -218,8 +219,48 @@ const stylistsData = [
   }
 ]
 
-// Sort stylists by experience (descending) and create reactive ref
-const stylists = ref(stylistsData.sort((a, b) => b.experience - a.experience))
+// Create reactive ref for stylists
+const stylists = ref([])
+const loading = ref(true)
+
+// Load stylists from API
+const loadStylists = async () => {
+  try {
+    loading.value = true
+    const response = await stylistAPI.getAll()
+
+    // Map API data to include fallback images and contact info
+    const apiStylists = response.data.map((stylist, index) => ({
+      ...stylist,
+      id: stylist._id || stylist.id,
+      name: stylist.fullName || `${stylist.firstName} ${stylist.lastName}`,
+      image: stylistsData[index % stylistsData.length]?.image || require('@/asset/images/download.jpg'),
+      contact: stylist.contact || {
+        phone: stylist.phone || '(555) 123-4567',
+        email: stylist.email || 'stylist@elitebarbershop.com',
+        location: stylist.address || '123 Main St, Downtown',
+        social: stylist.social || {
+          instagram: '#',
+          facebook: '#',
+          twitter: '#',
+          linkedin: '#'
+        }
+      }
+    }))
+
+    // If API has no stylists, use fallback data
+    stylists.value = apiStylists.length > 0
+      ? apiStylists.sort((a, b) => (b.experience || 0) - (a.experience || 0))
+      : stylistsData.sort((a, b) => b.experience - a.experience)
+
+  } catch (error) {
+    console.error('Error loading stylists:', error)
+    // Fallback to hardcoded data if API fails
+    stylists.value = stylistsData.sort((a, b) => b.experience - a.experience)
+  } finally {
+    loading.value = false
+  }
+}
 
 const continueWithStylist = (stylist) => {
   if (!selectedService.value) {
@@ -227,28 +268,39 @@ const continueWithStylist = (stylist) => {
     return
   }
 
-  // Store selected stylist for future service selections
-  localStorage.setItem('selectedStylist', JSON.stringify({
-    id: stylist.id,
-    name: stylist.name
-  }))
+  // Store complete stylist data with correct MongoDB _id
+  const stylistData = {
+    _id: stylist._id || stylist.id, // Use MongoDB _id
+    id: stylist._id || stylist.id,  // Keep for compatibility
+    name: stylist.fullName || `${stylist.firstName} ${stylist.lastName}`,
+    firstName: stylist.firstName,
+    lastName: stylist.lastName,
+    title: stylist.title,
+    rating: stylist.rating,
+    experience: stylist.experience
+  }
+
+  localStorage.setItem('selectedStylist', JSON.stringify(stylistData))
 
   // Navigate to booking page with both service and stylist information
   router.push({
     path: '/booking',
     query: {
-      serviceId: selectedService.value.id,
+      serviceId: selectedService.value._id || selectedService.value.id,
       serviceName: selectedService.value.name,
-      price: selectedService.value.price,
-      duration: selectedService.value.duration,
-      stylistId: stylist.id,
-      stylistName: stylist.name,
-      preferredStylist: stylist.name
+      servicePrice: selectedService.value.price,
+      serviceDuration: selectedService.value.duration,
+      stylistId: stylistData._id,
+      stylistName: stylistData.name,
+      preferredStylist: stylistData.name
     }
   })
 }
 
 onMounted(() => {
+  // Load stylists from API
+  loadStylists()
+
   // Check if a service was selected from the services page
   const storedService = localStorage.getItem('selectedService')
   if (storedService) {
@@ -260,7 +312,7 @@ onMounted(() => {
 <style scoped>
 .stylists {
   padding: 1.6rem;
-  background: linear-gradient(135deg, #f4e4bc 0%, #f0d49c 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   min-height: 100vh;
 }
 
@@ -273,14 +325,14 @@ onMounted(() => {
 }
 
 .stylists-header h1 {
-  color: #2c2c2c;
+  color: #f4e4bc;
   font-size: 3rem;
   margin-bottom: 1rem;
   font-weight: 700;
 }
 
 .header-description {
-  color: #5a5a5a;
+  color: #bdc3c7;
   font-size: 1.2rem;
   line-height: 1.6;
   margin: 0;
@@ -295,12 +347,13 @@ onMounted(() => {
 }
 
 .stylist-card {
-  background: white;
+  background: linear-gradient(135deg, #2c2c2c 0%, #3a3a3a 100%);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
   position: relative;
+  border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 .stylist-card:hover {
@@ -412,7 +465,7 @@ onMounted(() => {
 }
 
 .stylist-info h3 {
-  color: #2c2c2c;
+  color: #f4e4bc;
   font-size: 1.8rem;
   margin: 0 0 0.5rem 0;
   font-weight: 700;
@@ -426,14 +479,14 @@ onMounted(() => {
 }
 
 .stylist-experience {
-  color: #5a5a5a;
+  color: #bdc3c7;
   font-size: 0.9rem;
   margin: 0 0 1.5rem 0;
   font-style: italic;
 }
 
 .stylist-specialties h4 {
-  color: #2c2c2c;
+  color: #f4e4bc;
   font-size: 1rem;
   margin: 0 0 0.5rem 0;
   font-weight: 600;

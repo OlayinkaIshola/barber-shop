@@ -18,7 +18,8 @@
         <router-link to="/">Home</router-link>
         <router-link to="/services">Services</router-link>
         <router-link to="/stylists">Our Team</router-link>
-        <router-link v-if="isLoggedIn" to="/employee-dashboard" class="dashboard-link">Dashboard</router-link>
+        <router-link v-if="isLoggedIn && userRole === 'admin'" to="/admin-dashboard" class="dashboard-link">Admin Dashboard</router-link>
+        <router-link v-if="isLoggedIn && (userRole === 'barber' || userRole === 'employee')" to="/employee-dashboard" class="dashboard-link">Dashboard</router-link>
         <router-link v-if="!isLoggedIn" to="/register" class="register-link">Register as Barber</router-link>
         <router-link v-if="!isLoggedIn" to="/login" class="login-link">Login</router-link>
         <button v-if="isLoggedIn" @click="logout" class="logout-btn">Logout</button>
@@ -36,6 +37,7 @@ const route = useRoute()
 const router = useRouter()
 const dynamicNavBackground = ref('linear-gradient(180deg, rgba(44, 44, 44, 0.95) 0%, rgba(44, 44, 44, 0.8) 70%, transparent 100%)')
 const isLoggedIn = ref(false)
+const userRole = ref('')
 
 // Pages where navigation should be hidden
 const hiddenNavPages = ['/booking', '/payment', '/payment-success', '/register', '/registration-success', '/login', '/forgot-password']
@@ -43,13 +45,30 @@ const hiddenNavPages = ['/booking', '/payment', '/payment-success', '/register',
 // Check login status
 const checkLoginStatus = () => {
   isLoggedIn.value = localStorage.getItem('isLoggedIn') === 'true'
+  if (isLoggedIn.value) {
+    const userData = localStorage.getItem('user')
+    if (userData) {
+      try {
+        const user = JSON.parse(userData)
+        userRole.value = user.role || ''
+      } catch (error) {
+        console.error('Error parsing user data:', error)
+        userRole.value = ''
+      }
+    }
+  } else {
+    userRole.value = ''
+  }
 }
 
 // Logout function
 const logout = () => {
   localStorage.removeItem('isLoggedIn')
   localStorage.removeItem('userEmail')
+  localStorage.removeItem('user')
+  localStorage.removeItem('token')
   isLoggedIn.value = false
+  userRole.value = ''
   router.push('/')
 }
 
@@ -141,7 +160,13 @@ const setupIntersectionObserver = () => {
   box-sizing: border-box;
 }
 
-
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: #e8e8e8;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  min-height: 100vh;
+}
 
 .navbar {
   position: fixed;
